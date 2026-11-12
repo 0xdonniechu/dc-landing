@@ -81,6 +81,10 @@ Fix round 3 (owner approval 2026-11-13): hero geometry in rem so it scales with 
 - **Footer:** 90 px tall.
 - **Badge:** the floating badge takes the reference's box.
 
+Every task from T5 on (owner rule on text size, from the T3 and T4 reviews): the task's blocks join `ZOOM_BLOCKS` in `scripts/probe-media.mjs`, so at 150% and 200% text no text spills out of its box in them; boxes grow with text (rem or content-sized) while keeping their parity size at the default root.
+
+T8 also moves the h1 scale (`--fs-h1`) to rem (T3 review, MINOR: it stays 44/95 px when the user's text size grows).
+
 ### T9 Docs and the whole gate
 `CLAUDE.md` Verify gains the parity gate and the media probe; its "owner visual check" line points to the parity screenshots. `CONTENT.md` lists the new watch block and the dialog. Run the full gate.
 
@@ -108,23 +112,27 @@ Fix round 3 (owner approval 2026-11-13): hero geometry in rem so it scales with 
 - check: `node scripts/parity.mjs --only watch,proof`
 
 ### T5 (builder) "You might be thinking" and how
-- allow: `index.html` `site.css` `site.js`
+- allow: `index.html` `site.css` `site.js` `scripts/probe-media.mjs`
 - check: `node scripts/check.mjs`
+- check: `node scripts/probe-media.mjs`
 - check: `node scripts/parity.mjs --only night,how`
 
 ### T6 (builder) Styles and self-check
-- allow: `index.html` `site.css` `site.js`
+- allow: `index.html` `site.css` `site.js` `scripts/probe-media.mjs`
 - check: `node scripts/check.mjs`
+- check: `node scripts/probe-media.mjs`
 - check: `node scripts/parity.mjs --only styles,check`
 
 ### T7 (builder) Inside and price
-- allow: `index.html` `site.css` `site.js`
+- allow: `index.html` `site.css` `site.js` `scripts/probe-media.mjs`
 - check: `node scripts/check.mjs`
+- check: `node scripts/probe-media.mjs`
 - check: `node scripts/parity.mjs --only inside,price`
 
 ### T8 (builder) FAQ, final, footer, badge
-- allow: `index.html` `site.css` `site.js`
+- allow: `index.html` `site.css` `site.js` `scripts/probe-media.mjs`
 - check: `node scripts/check.mjs`
+- check: `node scripts/probe-media.mjs`
 - check: `node scripts/parity.mjs --only faq,final,footer,badge`
 
 ### T9 (main) Docs and the whole gate

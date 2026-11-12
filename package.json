@@ -1,0 +1,12 @@
+{
+  "name": "dc-landing",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "dev": "npx -y serve@14.2.4 -l 4173 ."
+  },
+  "devDependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

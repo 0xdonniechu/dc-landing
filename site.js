@@ -188,7 +188,15 @@
       v.focus();
       let p;
       try { p = v.play(); } catch { p = Promise.reject(); }
-      if (p) p.catch(() => { v.removeAttribute('controls'); btn.hidden = false; btn.focus(); });
+      if (p) p.catch(err => {
+        v.removeAttribute('controls');
+        btn.hidden = false;
+        // AbortError: a pause (scroll-out, another reel) cut in while the file was still loading.
+        // Show the button again but never pull focus or scroll back to this reel.
+        if (err && err.name === 'AbortError') return;
+        const r = v.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight) btn.focus({ preventScroll: true });
+      });
     });
     v.addEventListener('play', () => { stopOthers(v); btn.hidden = true; });
     v.addEventListener('ended', () => { btn.hidden = false; });

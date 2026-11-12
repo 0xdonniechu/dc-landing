@@ -31,7 +31,8 @@ Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and ke
 | Hero | Early badge | EARLY PRICE, SAVE $20, ends in countdown | `.badge-early` |
 | Hero | Small line | Download right away, one payment, see how it works (#how) | `#top .fine` |
 | Fan | View tags (samples) | 12,345 / 23,456 / 67,890 / 34,567 / 45,678 VIEWS | `.fan .tag` |
-| Fan | Scene text | terminal lines, checklist, "ONE PROMPT" folder, self-check 6/8, skill cards | `.fan .scene` |
+| Fan | Scene text | terminal lines, checklist, self-check 6/8, skill cards (the centre phone plays the video instead) | `.fan .scene` |
+| Fan | Centre phone video | 12 s muted loop, 540x960, no audio: typed prompt, plan ticks, self-check 6/8 to 8/8, blue SHIPPED card with the mascot. Files `assets/video/hero-loop.webm` (VP9), `hero-loop.mp4` (H.264), `hero-loop-poster.webp` (frame 0). Plays only in view and never under reduced motion; toggle chip "Pause"/"Play"; screen-reader line in `figcaption`. Re-render below. | `#hero-video`, `#hero-video-ctl`, `.phone-c figcaption`; `site.js` "hero video" |
 | Ticker | Phrases | THEN price-later, SAVE x TODAY, EARLY PRICE price, ENDS IN countdown; its `aria-label` is built in `site.js` from the price and deadline data | `.ticker-group` (three copies, two `aria-hidden`) |
 | Doubts band | H2 | YOU MIGHT BE THINKING... | `h2#think-title` |
 | Doubts band | Pills | 01 THEY NEVER FINISH, 02 IT'S HARD TO SET UP, 03 IT ALL LOOKS THE SAME | `.pills` |
@@ -67,6 +68,19 @@ Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and ke
 | Footer | Line | >_ vibe working & agentic AI | `.foot-line` |
 | Floating badge | Ring text | GET THE KIT (repeated); accessible name "Get the kit, [early price] $N" is built in `site.js` | `#float-badge textPath` |
 
+## Re-rendering the hero video
+
+The HyperFrames source lives in `video/` and is not published. After changing it:
+
+```sh
+cd video && npx hyperframes render -o renders/promo-master.mp4 -q delivery
+ffmpeg -i renders/promo-master.mp4 -an -vf scale=540:960 -c:v libvpx-vp9 -crf 33 -b:v 0 -row-mt 1 -pix_fmt yuv420p ../assets/video/hero-loop.webm
+ffmpeg -i renders/promo-master.mp4 -an -vf scale=540:960 -c:v libx264 -preset slow -crf 24 -pix_fmt yuv420p -movflags +faststart ../assets/video/hero-loop.mp4
+ffmpeg -i renders/promo-master.mp4 -vf scale=540:960 -frames:v 1 -c:v libwebp -quality 80 ../assets/video/hero-loop-poster.webp
+```
+
+Keep the video 540x960 (9:16) with no audio track, and the last frame matching frame 0 so the loop is seamless. The `width`/`height` on `<video>` must stay 540/960.
+
 ## Before launch
 
 - Replace the sample numbers (fan tags, proof claim and cards) with real ones or remove them.
@@ -82,9 +96,11 @@ Looked up with `npx -y modern-web-guidance@latest search` and `retrieve`.
 | `motion` | Animations only inside `prefers-reduced-motion: no-preference` (ticker, caret blink, badge spin, reveal, ring fill), static state otherwise; transform/opacity/translate only; a visible Pause/Play button for the ticker (WCAG 2.2.2). |
 | `scroll-entry-exit-effects` | Read for scroll reveal. Not used as written: a view-timeline hides items again below the viewport after a scroll-up, so reveal is a one-way `IntersectionObserver` (`.reveal` / `.in`) with everything visible without JS or under reduced motion. |
 | `optimize-image-priority` | Only the wave mascot has `fetchpriority="high"` and no `loading`; every other mascot is `loading="lazy"` with no `fetchpriority`; all images have width/height. |
-| `accessibility` | Toggle cards are `<button aria-pressed>`; the countdown sits in no live region, one polite hourly message in a single `aria-live` region; decorative fan and mock scenes are `aria-hidden`; visible focus. |
+| `accessibility` | Toggle cards are `<button aria-pressed>`; the countdown sits in no live region, one polite hourly message in a single `aria-live` region; decorative fan phones, tags and the hero video are `aria-hidden` (the pause chip and the one `figcaption` of the centre phone are not, so `.fan` itself is not hidden); visible focus. |
 | `performance` (web fonts) | One Google Fonts `<link>` with `preconnect` (+ `crossorigin` for gstatic) and `display=swap`; only the weights used. Self-hosted preload of the fonts was not done (no external files in the repo). |
 | `visually-stable-font-fallbacks` | `font-size-adjust: from-font` on `body`, with metric-close fallback stacks (Impact for Anton, system UI for Inter, ui-monospace for JetBrains Mono). |
+| `lazy-load-video-and-audio` | Hero video: `preload="none"`, explicit `width`/`height` (no layout shift), poster, no `autoplay`; playback starts from an `IntersectionObserver` in `site.js`. `loading="lazy"` was not added (Chrome/Edge only, and the video is near the fold). |
+| `efficient-background-processing` | Read for pausing off-screen work. Not used as written (`content-visibility` event); the video pauses when it leaves the viewport via `IntersectionObserver`, which the guide names for logic tied to visibility. |
 
 The `countdown timer live region` search returned `accessibility` (live regions) and `calculate-event-differentials` (Temporal); Temporal is not Widely available, so the countdown uses plain `Date` arithmetic.
 

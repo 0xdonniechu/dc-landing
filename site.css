@@ -207,6 +207,17 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 .mini-card { background: var(--cream); border: 2.5px solid var(--ink); border-radius: 8px; padding: 12px; margin: 0 0 12px !important; rotate: var(--r, 0deg); box-shadow: 3px 3px 0 var(--ink); font-weight: 700; }
 .mini-card.on { background: var(--yellow); }
 
+.phone-c .screen { min-height: 0; }
+.hero-video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: var(--paper); }
+.video-ctl {
+  position: absolute; z-index: 4; top: 14px; right: 20px; min-height: 24px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+  background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); border-radius: 8px; padding: 3px 8px;
+  font: 700 .62rem/1 var(--font-mono); letter-spacing: .08em; box-shadow: 2px 2px 0 var(--ink);
+}
+.video-ctl:hover { background: var(--ink); color: var(--cream); }
+.video-ctl[hidden] { display: none; }
+.vc-ico { font-size: .5rem; letter-spacing: -.1em; }
+
 .mascot { position: absolute; z-index: 4; }
 .sticker {
   filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff)

@@ -141,6 +141,33 @@
     });
   }
 
+  /* ---------- hero video: plays only in view, never under reduced motion (WCAG 2.2.2 toggle) ---------- */
+  const heroVideo = $('#hero-video');
+  const videoBtn = $('#hero-video-ctl');
+  if (heroVideo && videoBtn && 'IntersectionObserver' in window) {
+    let inView = false, userPaused = false;
+    const label = $('.vc-txt', videoBtn), icon = $('.vc-ico', videoBtn);
+    const sync = () => {
+      const want = inView && !userPaused && !reduced.matches && !document.hidden;
+      if (want) { const p = heroVideo.play(); if (p) p.catch(() => {}); }
+      else if (!heroVideo.paused) heroVideo.pause();
+      if (reduced.matches && heroVideo.currentTime > 0) heroVideo.currentTime = 0;
+    };
+    const paintBtn = () => {
+      videoBtn.hidden = reduced.matches;
+      label.textContent = userPaused ? 'Play' : 'Pause';
+      icon.textContent = userPaused ? '\u25B6' : '\u275A\u275A';
+    };
+    videoBtn.addEventListener('click', () => { userPaused = !userPaused; paintBtn(); sync(); });
+    new IntersectionObserver(entries => {
+      inView = entries[entries.length - 1].isIntersecting;
+      sync();
+    }, { threshold: 0.25 }).observe(heroVideo);
+    document.addEventListener('visibilitychange', sync);
+    motionHooks.push(() => { paintBtn(); sync(); });
+    paintBtn();
+  }
+
   /* ---------- steps tick when the terminal scrolls into view ---------- */
   const steps = $$('.step');
   const terminal = $('#terminal');

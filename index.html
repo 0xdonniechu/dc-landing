@@ -62,8 +62,8 @@
 
   <!-- 3. FAN -->
   <div class="fan-wrap">
-    <div class="fan" aria-hidden="true">
-      <figure class="phone" style="--w:210px;--rot:-8deg;--mt:130px">
+    <div class="fan">
+      <figure class="phone" aria-hidden="true" style="--w:210px;--rot:-8deg;--mt:130px">
         <span class="tag">12,345 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>claude</span></div>
@@ -78,7 +78,7 @@
           </div>
         </div>
       </figure>
-      <figure class="phone" style="--w:236px;--rot:-4deg;--mt:62px">
+      <figure class="phone" aria-hidden="true" style="--w:236px;--rot:-4deg;--mt:62px">
         <span class="tag">23,456 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>launch.md</span></div>
@@ -95,22 +95,18 @@
         </div>
       </figure>
       <figure class="phone phone-c" style="--w:290px;--rot:0deg;--mt:0px">
-        <span class="tag tag-paper">67,890 VIEWS &#8599;</span>
+        <span class="tag tag-paper" aria-hidden="true">67,890 VIEWS &#8599;</span>
+        <figcaption class="sr-only">A looping clip: a prompt is typed, the agent ticks off its plan and a self-check goes from 6 to 8 out of 8, then a blue SHIPPED card with the DC mascot appears.</figcaption>
         <div class="screen">
-          <div class="bar"><i></i><i></i><i></i><span>~/dc-agent-kit</span></div>
-          <div class="scene center-scene">
-            <p class="small">This one folder gives you</p>
-            <p class="big">ONE <span class="hl">PROMPT</span></p>
-            <div class="folder">
-              <span class="folder-tab mono">kit/</span>
-              <p class="folder-t">AGENT KIT</p>
-              <p class="mono folder-m">08 PARTS &middot; 1 FOLDER</p>
-            </div>
-            <p class="mini-prompt mono">claude &rsaquo; ~/dc-agent-kit <span class="caret-s"></span></p>
-          </div>
+          <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>~/dc-agent-kit</span></div>
+          <video class="hero-video" id="hero-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/video/hero-loop-poster.webp" aria-hidden="true">
+            <source src="assets/video/hero-loop.webm" type="video/webm">
+            <source src="assets/video/hero-loop.mp4" type="video/mp4">
+          </video>
         </div>
+        <button class="video-ctl mono" type="button" id="hero-video-ctl" hidden><span aria-hidden="true" class="vc-ico">&#10074;&#10074;</span> <span class="vc-txt">Pause</span><span class="sr-only"> video</span></button>
       </figure>
-      <figure class="phone" style="--w:236px;--rot:4deg;--mt:62px">
+      <figure class="phone" aria-hidden="true" style="--w:236px;--rot:4deg;--mt:62px">
         <span class="tag">34,567 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>report.md</span></div>
@@ -124,7 +120,7 @@
           </div>
         </div>
       </figure>
-      <figure class="phone" style="--w:210px;--rot:8deg;--mt:130px">
+      <figure class="phone" aria-hidden="true" style="--w:210px;--rot:8deg;--mt:130px">
         <span class="tag">45,678 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>skills/</span></div>

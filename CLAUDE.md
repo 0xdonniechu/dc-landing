@@ -26,6 +26,7 @@ A static page (`index.html`, `site.css`, `site.js`, the `assets` folder) that se
 - Every number that is a claim stays an obvious sample until launch; the footer says so. Editable strings live in `CONTENT.md`.
 - Publish scope: only what `.vercelignore` re-includes is published (index.html, site.css, site.js, favicon.svg and the `assets` folder); adding a public file means adding it there. Re-includes in `.vercelignore` must name folders without a trailing slash (`!/assets`, not `!/assets/`): the Vercel CLI tests the bare folder path, so a trailing-slash rule never matches and the folder is skipped. CLAUDE.md, CONTENT.md, README.md, scripts/, package files, `.claude/`, `.check/`, `HANDOFF.md` and `.env*` stay out.
 - Static HTML shows the regular price; every early-price piece is `hidden` and marked `data-early`, and `site.js` reveals it only while a valid `data-price`, `data-price-later` and a future `data-deadline` all exist.
+- The hero video (centre phone) plays only in view and never under reduced motion; the HyperFrames source lives in `video/` and is not published (re-render steps in `CONTENT.md`).
 - Deploy: Vercel via the `vercel` wrapper (0xdonniechu login). Check `.vercel/project.json` `orgId` first. Preview first; production only with the owner's approval; never one deploy per edit.
 - Git: identity `0xdonniechu` (the machine default), repo public on GitHub under 0xdonniechu (not yet created). No Ambysto rules here. Keep private paths and names out; the repo is public.
 

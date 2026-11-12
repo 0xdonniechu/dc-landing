@@ -39,11 +39,11 @@
 <!-- 2. HERO -->
 <section class="hero band" data-p="hero" id="top" aria-labelledby="hero-title">
   <div class="wrap hero-in">
-    <p class="kicker hand">one prompt in, checked work out</p>
-    <h1 id="hero-title" class="h1">ONE PROMPT.<br><span class="hl">REAL WORK</span> DONE.</h1>
-    <p class="lead">DC Agent Kit is a folder of Claude Code skills and agents. Type one line and it plans the job, builds it, checks its own work and hands back something finished.</p>
+    <p class="kicker hand" data-p="hero.kicker">one prompt in, checked work out</p>
+    <h1 id="hero-title" class="h1" data-p="hero.h1">ONE PROMPT.<br><span class="hl">REAL WORK</span> DONE.</h1>
+    <p class="lead" data-p="hero.lead">DC Agent Kit is a folder of Claude Code skills and agents. Type one line and get back finished work that has checked itself.</p>
 
-    <div class="prompt" role="group" aria-label="Example prompts">
+    <div class="prompt" data-p="hero.prompt" role="group" aria-label="Example prompts">
       <span class="prompt-gt" aria-hidden="true">&gt;</span>
       <span class="prompt-text" aria-hidden="true"><span id="typed">build me a landing page for my newsletter</span><span class="caret"></span></span>
       <span class="sr-only">Example prompts: build me a landing page for my newsletter; review this repo and fix what is weak; turn my notes into a weekly report.</span>
@@ -51,8 +51,8 @@
     </div>
 
     <div class="cta-row">
-      <a class="btn btn-lg" href="#price" data-cta>GET THE KIT <span class="pill-price" data-bind="price">$39</span></a>
-      <p class="badge-early sticker-tag" data-early hidden>
+      <a class="btn btn-lg" data-p="hero.cta" href="#price" data-cta>GET THE KIT <span class="pill-price" data-bind="price">$39</span></a>
+      <p class="badge-early sticker-tag" data-p="hero.launch" data-early hidden>
         <span class="mono">EARLY PRICE &middot; SAVE <span data-bind="save">$20</span></span>
         <span class="mono" role="timer">ends in <span data-countdown>&mdash;</span></span>
       </p>
@@ -63,7 +63,7 @@
   <!-- 3. FAN -->
   <div class="fan-wrap">
     <div class="fan">
-      <figure class="phone" aria-hidden="true" style="--w:210px;--rot:-8deg;--mt:130px">
+      <figure class="ph ph-l" data-p="hero.phoneL" aria-hidden="true"><div class="phone" style="--rot:-8deg">
         <span class="tag">12,345 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>claude</span></div>
@@ -77,8 +77,8 @@
             <p><span class="caret-s"></span></p>
           </div>
         </div>
-      </figure>
-      <figure class="phone" aria-hidden="true" style="--w:236px;--rot:-4deg;--mt:62px">
+      </div></figure>
+      <figure class="ph ph-il" data-p="hero.phoneIL" aria-hidden="true"><div class="phone" style="--rot:-4deg">
         <span class="tag">23,456 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>launch.md</span></div>
@@ -93,10 +93,11 @@
             </ul>
           </div>
         </div>
-      </figure>
-      <figure class="phone phone-c" style="--w:290px;--rot:0deg;--mt:0px">
-        <span class="tag tag-paper" aria-hidden="true">67,890 VIEWS &#8599;</span>
+      </div></figure>
+      <figure class="ph ph-c" data-p="hero.phoneC">
         <figcaption class="sr-only">A looping clip: a prompt is typed, the agent ticks off its plan and a self-check goes from 6 to 8 out of 8, then a blue SHIPPED card with the DC mascot appears.</figcaption>
+        <div class="phone phone-c">
+        <span class="tag tag-paper" aria-hidden="true">67,890 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>~/dc-agent-kit</span></div>
           <video class="hero-video" id="hero-video" muted loop playsinline preload="none" width="540" height="960" poster="assets/video/hero-loop-poster.webp" aria-hidden="true">
@@ -105,8 +106,8 @@
           </video>
         </div>
         <button class="video-ctl mono" type="button" id="hero-video-ctl" hidden><span aria-hidden="true" class="vc-ico">&#10074;&#10074;</span> <span class="vc-txt">Pause</span><span class="sr-only"> video</span></button>
-      </figure>
-      <figure class="phone" aria-hidden="true" style="--w:236px;--rot:4deg;--mt:62px">
+      </div></figure>
+      <figure class="ph ph-ir" data-p="hero.phoneIR" aria-hidden="true"><div class="phone" style="--rot:4deg">
         <span class="tag">34,567 VIEWS &#8599;</span>
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>report.md</span></div>
@@ -119,21 +120,9 @@
             <p class="bar-row"><span style="--v:40%"></span></p>
           </div>
         </div>
-      </figure>
-      <figure class="phone" aria-hidden="true" style="--w:210px;--rot:8deg;--mt:130px">
-        <span class="tag">45,678 VIEWS &#8599;</span>
-        <div class="screen">
-          <div class="bar"><i></i><i></i><i></i><span>skills/</span></div>
-          <div class="scene mono">
-            <p class="mini-card" style="--r:-3deg">plan.skill</p>
-            <p class="mini-card on" style="--r:2deg">build.agent</p>
-            <p class="mini-card" style="--r:-2deg">review.agent</p>
-            <p class="mini-card" style="--r:3deg">check.sh</p>
-          </div>
-        </div>
-      </figure>
+      </div></figure>
     </div>
-    <img class="mascot mascot-wave sticker" src="assets/mascot/wave.webp" width="263" height="256" alt="DC mascot waving" fetchpriority="high">
+    <img class="mascot mascot-wave sticker" data-p="hero.mascot" src="assets/mascot/wave-tall.webp" width="263" height="323" alt="DC mascot waving" fetchpriority="high">
   </div>
 </section>
 

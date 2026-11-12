@@ -1,5 +1,5 @@
 ---
-status: approved  # draft → approved → planned → building → verified → shipped (PR #n)
+status: planned   # draft → approved → planned → building → verified → shipped (PR #n)
 ---
 # Layout parity with the reference site
 

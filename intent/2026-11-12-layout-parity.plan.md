@@ -1,4 +1,4 @@
-status: draft # draft → planned → building → verified
+status: building# draft → planned → building → verified
 
 # Plan: layout parity with the reference site
 

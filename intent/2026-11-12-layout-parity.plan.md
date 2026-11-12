@@ -1,4 +1,4 @@
-status: building# draft → planned → building → verified
+status: building (one-prompt run, started by the owner 2026-11-12) # draft → planned → building → verified
 
 # Plan: layout parity with the reference site
 

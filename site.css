@@ -138,12 +138,22 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 
 /* Hero */
 /* Geometry (box sizes, offsets, block height) is set from the reference numbers in scripts/parity-ref.json. */
-.hero { padding-block: clamp(44px, calc(44px + (100vw - 1100px) * .0088), 47px) 0; min-height: clamp(1029px, calc(1029px + (100vw - 1100px) * .4706), 1189px); }
+/* Everything in the hero is in rem (the vw terms stay), so a larger root font size scales text, buttons, phones and
+   mascot together; at the default 16 px root each value is the reference's px. The phones hang from the hero's bottom,
+   so the hero's bottom padding (--fan-h) reserves the height of the tallest phone: the hero grows with its text
+   and the phones never reach it. --fan-trim is the 4.25rem by which the reference's own 701-1100 px layout lets the
+   phone overlap the "see how it works" line; it is given back as soon as the root is larger than 16 px. */
+.hero {
+  --fan-h: 30.5rem; --fan-trim: 0px;
+  padding-block: clamp(2.75rem, calc(2.75rem + (100vw - 1100px) * .0088), 2.9375rem)
+    calc(var(--fan-h) - var(--fan-trim) + clamp(0px, calc((1rem - 16px) * 512), var(--fan-trim)));
+  min-height: clamp(64.3125rem, calc(64.3125rem + (100vw - 1100px) * .4706), 74.3125rem);
+}
 .hero-in { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .kicker { font-size: clamp(1.4rem, 2vw, 1.85rem); color: var(--blue); rotate: -2deg; line-height: 1; margin-bottom: 4px; }
-.hero .kicker { font-size: clamp(1.35rem, calc(1.35rem + (100vw - 1100px) * .00941), 1.55rem); line-height: 1.13; margin-bottom: 10px; }
+.hero .kicker { font-size: clamp(1.35rem, calc(1.35rem + (100vw - 1100px) * .00941), 1.55rem); line-height: 1.13; margin-bottom: .625rem; }
 .hero .h1 { width: 100%; line-height: 1.0575; }
-.hero .lead { margin: 16px auto 0; max-width: 32em; font-size: 1.2625rem; line-height: 1.5; }
+.hero .lead { margin: 1rem auto 0; max-width: 32em; font-size: 1.2625rem; line-height: 1.5; }
 .prompt {
   width: min(720px, 100%); margin-top: 28px;
   display: flex; align-items: center; gap: 12px;
@@ -163,26 +173,27 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
   font-size: clamp(.78rem, .72rem + .2vw, .9rem); font-weight: 700; letter-spacing: .04em;
 }
 .badge-early .mono:last-child { font-weight: 500; font-size: 1.12em; }
-.hero .prompt { height: 57px; padding-block: 0; }
-.hero .cta-row { margin-top: 26px; gap: 9px 21px; }
-.hero .btn-lg { width: 222px; height: 63px; padding: 0; justify-content: center; font-size: 1.55rem; }
-.hero .badge-early { width: 204px; height: 53px; padding: 0 10px; align-content: center; gap: 1px; font-size: 11px; letter-spacing: .02em; }
+.hero .prompt { width: min(45rem, 100%); height: 3.5625rem; padding-block: 0; }
+.hero .cta-row { margin-top: 1.625rem; gap: .5625rem 1.3125rem; }
+.hero .btn-lg { width: 13.875rem; height: 3.9375rem; padding: 0; justify-content: center; font-size: 1.55rem; }
+.hero .badge-early { width: 12.75rem; height: 3.3125rem; padding: 0 .625rem; align-content: center; gap: .0625rem; font-size: .6875rem; letter-spacing: .02em; }
+.hero .fine { margin-top: .875rem; }
 
 /* Fan: four phones and the mascot, anchored to the bottom of the hero block like the reference. Each .ph is the
    measured box (not rotated); the .phone inside tilts. The hero clips what hangs below it (.band overflow). */
 .fan-wrap { position: absolute; inset: 0; pointer-events: none; }
-.ph { position: absolute; margin: 0; width: 271px; height: 442px; }
-.ph-l { left: calc(50% - 621px); bottom: -174px; width: 267px; height: 394px; }
-.ph-il { left: calc(50% - 407px); bottom: -118px; }
-.ph-c { left: calc(50% - 145px); bottom: -70px; width: 290px; height: 535px; z-index: 2; }
-.ph-ir { left: calc(50% + 137px); bottom: -118px; }
+.ph { position: absolute; margin: 0; width: 16.9375rem; height: 27.625rem; }
+.ph-l { left: calc(50% - 38.8125rem); bottom: -10.875rem; width: 16.6875rem; height: 24.625rem; }
+.ph-il { left: calc(50% - 25.4375rem); bottom: -7.375rem; }
+.ph-c { left: calc(50% - 9.0625rem); bottom: -4.375rem; width: 18.125rem; height: 33.4375rem; z-index: 2; }
+.ph-ir { left: calc(50% + 8.5625rem); bottom: -7.375rem; }
 .phone {
   position: relative; width: 100%; height: 100%; rotate: var(--rot);
-  background: var(--ink); border-radius: 32px; padding: 10px; box-shadow: var(--shadow);
+  background: var(--ink); border-radius: 2rem; padding: .625rem; box-shadow: var(--shadow);
 }
 .phone-c { z-index: 2; }
 .tag {
-  position: absolute; top: -17px; left: 50%; translate: -50% 0; rotate: -3deg; z-index: 3; white-space: nowrap;
+  position: absolute; top: -1.0625rem; left: 50%; translate: -50% 0; rotate: -3deg; z-index: 3; white-space: nowrap;
   background: var(--blue); color: var(--cream); border: 2.5px solid var(--ink); border-radius: 8px; padding: 6px 11px;
   font: 700 .72rem/1 var(--font-mono); letter-spacing: .08em; box-shadow: 3px 3px 0 var(--ink);
 }
@@ -238,7 +249,7 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
   filter: drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff)
           drop-shadow(0 6px 8px rgba(0, 0, 0, .28));
 }
-.mascot-wave { left: calc(50% + 330px); bottom: -6px; width: 240px; height: auto; aspect-ratio: 263 / 323; z-index: 4; }
+.mascot-wave { left: calc(50% + 20.625rem); bottom: -.375rem; width: 15rem; height: auto; aspect-ratio: 263 / 323; z-index: 4; }
 
 /* Ticker: its own block after the hero. Box 110% of the page wide, 44 px tall, turned -1.5deg;
    the negative margins leave 10 px of flow so it sits over the hero/watch join. */
@@ -564,11 +575,11 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
 /* Breakpoints: 1100, 900 and 700 px, the same as the reference */
 @media (max-width: 1100px) {
   .nav { gap: 18px; }
-  .hero { min-height: clamp(897px, calc(930px + (100vw - 950px) * .66), 1029px); }
-  .hero { padding-top: clamp(36px, calc(39px + (100vw - 950px) * .0333), 44px); }
+  .hero { --fan-trim: 4.25rem; min-height: clamp(56.0625rem, calc(58.125rem + (100vw - 950px) * .66), 64.3125rem); }
+  .hero { padding-top: clamp(2.25rem, calc(2.4375rem + (100vw - 950px) * .0333), 2.75rem); }
   .hero .kicker { font-size: clamp(1.225rem, calc(1.225rem + (100vw - 950px) * .01333), 1.35rem); }
   .hero .lead { font-size: 1.1rem; }
-  .mascot-wave { left: calc(50% + 300px); width: 200px; }
+  .mascot-wave { left: calc(50% + 18.75rem); width: 12.5rem; }
   #proof .lead { font-size: 1.03rem; }
   .vframe { margin-top: clamp(28px, calc(28px + (100vw - 950px) * .033), 33px); }
   .vplay { width: clamp(266px, calc(266px + (100vw - 950px) * .22), 299px); height: clamp(56px, calc(56px + (100vw - 950px) * .0267), 60px); font-size: 1rem; }
@@ -584,10 +595,10 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .nav { display: none; }
   .mascot-money { right: -20px; }
   .mascot-think { opacity: .9; }
-  .hero { min-height: clamp(867px, calc(877px + (100vw - 768px) * .15), 897px); }
-  .hero { padding-top: 31px; }
+  .hero { min-height: clamp(54.1875rem, calc(54.8125rem + (100vw - 768px) * .15), 56.0625rem); }
+  .hero { padding-top: 1.9375rem; }
   .ph-l { display: none; }
-  .mascot-wave { left: calc(50% + 230px); width: 170px; }
+  .mascot-wave { left: calc(50% + 14.375rem); width: 10.625rem; }
 }
 @media (max-width: 700px) {
   .vframe { margin-top: 22px; }
@@ -604,15 +615,15 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .faq-grid { grid-template-columns: 1fr; }
   .faq-col:first-child details:last-child { border-bottom: 0; }
   .foot-r { text-align: left; }
-  .hero { min-height: 948px; padding-top: 24px; }
-  .hero .prompt { height: 47px; }
-  .hero .cta-row .btn { width: 222px; }
-  .ph-il, .ph-ir { width: 200px; height: 315px; bottom: -111px; }
-  .ph-il { left: calc(50% - 238px); }
-  .ph-ir { left: calc(50% + 39px); }
-  .ph-c { left: calc(50% - 105px); width: 210px; height: 387px; bottom: -69px; }
+  .hero { --fan-h: 21.25rem; --fan-trim: 0px; min-height: 59.25rem; padding-top: 1.5rem; }
+  .hero .prompt { height: 2.9375rem; }
+  .hero .cta-row .btn { width: 13.875rem; }
+  .ph-il, .ph-ir { width: 12.5rem; height: 19.6875rem; bottom: -6.9375rem; }
+  .ph-il { left: calc(50% - 14.875rem); }
+  .ph-ir { left: calc(50% + 2.4375rem); }
+  .ph-c { left: calc(50% - 6.5625rem); width: 13.125rem; height: 24.1875rem; bottom: -4.3125rem; }
   .fan .scene { font-size: .62rem; padding: 10px; }
-  .mascot-wave { left: calc(50% + 93px); width: 112px; }
+  .mascot-wave { left: calc(50% + 5.8125rem); width: 7rem; }
   .tag { font-size: .6rem; padding: 5px 8px; }
   .btn-lg { white-space: normal; }
   .cta-row .btn { width: 100%; justify-content: center; }

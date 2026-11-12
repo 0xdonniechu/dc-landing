@@ -271,6 +271,39 @@ for (const [vp, label] of [[{ width: 1440, height: 900 }, 'desktop'], [{ width: 
   await ctx.close();
 }
 
+/* ---- text zoom: a bigger root font size (a browser's text-size setting) must not paint a phone or the mascot over the
+   hero text, and the page must not scroll sideways. Boxes are intersected as rectangles: .fan-wrap is
+   pointer-events: none, so elementFromPoint would not see an overlap. ---- */
+for (const width of [1440, 950, 768, 390]) {
+  for (const [pct, px] of [[150, 24], [200, 32]]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'no-preference' });
+    const pg = await newPage(ctx, []);
+    await pg.goto(url, { waitUntil: 'networkidle' });
+    await pg.evaluate(() => document.fonts.ready);
+    const r = await pg.evaluate(px => {
+      document.documentElement.style.fontSize = `${px}px`;
+      const launch = document.querySelector('[data-p="hero.launch"]');
+      launch.hidden = false; // the early-price tape shown, the widest the CTA row gets
+      const rect = el => { const b = el.getBoundingClientRect(); return { l: b.left, t: b.top, r: b.right, b: b.bottom }; };
+      const live = els => [...els].map(el => [el, rect(el)]).filter(([, b]) => b.r - b.l > 0 && b.b - b.t > 0);
+      const label = el => el.getAttribute('data-p') || el.className || el.tagName;
+      const text = live(document.querySelectorAll('.hero [data-p="hero.kicker"], .hero [data-p="hero.h1"], .hero [data-p="hero.lead"], .hero [data-p="hero.prompt"], .hero [data-p="hero.cta"], .hero [data-p="hero.launch"], .hero .fine, .hero .fine a'));
+      const art = live(document.querySelectorAll('.hero .ph, .hero .phone, .hero .tag, .hero [data-p="hero.mascot"]'));
+      const hits = [];
+      for (const [a, ab] of art) for (const [t, tb] of text) {
+        const w = Math.min(ab.r, tb.r) - Math.max(ab.l, tb.l), h = Math.min(ab.b, tb.b) - Math.max(ab.t, tb.t);
+        if (w > 0.5 && h > 0.5) hits.push(`${label(a)} x ${label(t)} ${Math.round(w)}x${Math.round(h)}`);
+      }
+      const de = document.documentElement;
+      return { hits, shown: text.length, art: art.length, over: Math.max(de.scrollWidth, document.body.scrollWidth) - de.clientWidth,
+        hasCta: text.some(([e]) => label(e) === 'hero.cta'), hasLaunch: text.some(([e]) => label(e) === 'hero.launch') };
+    }, px);
+    ok(`text zoom ${pct}% at ${width}: no phone or mascot box overlaps the hero text, CTA, launch tape or prompt`, r.hits.length === 0 && r.hasCta && r.hasLaunch && r.art >= 3, r);
+    ok(`text zoom ${pct}% at ${width}: no horizontal overflow`, r.over <= 0, { over: r.over });
+    await ctx.close();
+  }
+}
+
 await browser.close();
 server.close();
 console.log(bad ? `${bad} FAILED` : 'all passed');

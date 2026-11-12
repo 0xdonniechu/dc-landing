@@ -84,6 +84,7 @@ Fix round 3 (owner approval 2026-11-13): hero geometry in rem so it scales with 
 Every task from T5 on (owner rule on text size, from the T3 and T4 reviews): the task's blocks join `ZOOM_BLOCKS` in `scripts/probe-media.mjs`, so at 150% and 200% text no text spills out of its box in them; boxes grow with text (rem or content-sized) while keeping their parity size at the default root.
 
 T8 also moves the h1 scale (`--fs-h1`) to rem (T3 review, MINOR: it stays 44/95 px when the user's text size grows).
+T8 also takes the T4 review's MINORs: the watch CTA's `min-width` makes it 444 px wide at 390 px with 200% text (it runs past the page edge); the zoom check also fails a box that runs past the page edge and runs at 1100 too; a probe case for a Ctrl/Shift click on a ticket (it follows the link, no dialog).
 
 ### T9 Docs and the whole gate
 `CLAUDE.md` Verify gains the parity gate and the media probe; its "owner visual check" line points to the parity screenshots. `CONTENT.md` lists the new watch block and the dialog. Run the full gate.

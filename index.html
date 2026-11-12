@@ -169,17 +169,19 @@
 </section>
 
 <!-- 4. DARK: THINKING -->
-<section class="band dark intro" data-p="night" aria-labelledby="think-title">
-  <div class="wrap intro-in">
-    <p class="kicker hand yellow-text">hmm&hellip;</p>
-    <h2 id="think-title" class="h2">YOU MIGHT BE<br><span class="hl">THINKING&hellip;</span></h2>
-    <nav class="pills" aria-label="Three doubts">
-      <a class="pill-link" href="#myth-1"><b>01</b> THEY NEVER FINISH</a>
-      <a class="pill-link" href="#myth-2"><b>02</b> IT'S HARD TO SET UP</a>
-      <a class="pill-link" href="#myth-3"><b>03</b> IT ALL LOOKS THE SAME</a>
-    </nav>
+<section class="band dark think" data-p="night" aria-labelledby="think-title">
+  <div class="wrap think-in">
+    <div class="think-copy">
+      <p class="kicker hand yellow-text">hmm&hellip;</p>
+      <h2 id="think-title" class="h2" data-p="night.h2">YOU MIGHT BE <span class="hl">THINKING&hellip;</span></h2>
+      <nav class="idx" data-p="night.links" aria-label="Three doubts">
+        <a class="pill-link" href="#myth-1"><b>01</b> THEY NEVER FINISH</a>
+        <a class="pill-link" href="#myth-2"><b>02</b> IT'S HARD TO SET UP</a>
+        <a class="pill-link" href="#myth-3"><b>03</b> IT ALL LOOKS THE SAME</a>
+      </nav>
+    </div>
+    <img class="think-pres sticker" data-p="night.mascot" src="assets/mascot/thinking.webp" width="253" height="256" alt="DC mascot thinking with a hand on the chin" loading="lazy">
   </div>
-  <img class="mascot mascot-think sticker" src="assets/mascot/thinking.webp" width="253" height="256" alt="DC mascot thinking with a hand on the chin" loading="lazy">
 </section>
 
 <!-- 5. PROOF -->
@@ -235,11 +237,11 @@
       <span class="num" aria-hidden="true">02</span>
       <p class="strike"><span class="sr-only">Doubt two: </span>&ldquo;IT'S HARD TO SET UP.&rdquo;</p>
     </div>
-    <h2 id="how-title" class="h2">YOU TYPE <span class="hl">ONE LINE.</span></h2>
-    <p class="lead lead-narrow">A plan, the build, a self-review and the hand-over, one after another, on your own machine.</p>
+    <h2 id="how-title" class="h2" data-p="how.h2">YOU TYPE <span class="hl">ONE LINE.</span></h2>
+    <p class="lead lead-narrow" data-p="how.lead">A plan, the build, a self-review and the hand-over, one step after another, all on your own machine.</p>
 
     <div class="how-grid">
-      <div class="terminal" id="terminal">
+      <div class="terminal" id="terminal" data-p="how.terminal">
         <div class="bar bar-dark"><i></i><i></i><i></i><span>claude &middot; ~/dc-agent-kit</span></div>
         <div class="term-body mono">
           <p class="term-prompt"><b class="y">&gt;</b> build me a landing page for my newsletter <span class="caret-s"></span></p>
@@ -251,10 +253,11 @@
             <li class="step"><span class="box" aria-hidden="true"></span><span class="step-t">Review its own work</span><span class="step-m">6/8 pass, fix 2</span></li>
             <li class="step"><span class="box" aria-hidden="true"></span><span class="step-t">Hand it back</span><span class="step-m">one finished folder</span></li>
           </ol>
+          <p class="term-out"><b class="y">&#10003;</b> finished folder and report, ready to read</p>
         </div>
       </div>
 
-      <div class="phone-tall" aria-hidden="true">
+      <div class="phone-tall" data-p="how.phone" aria-hidden="true">
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span>setup.md</span></div>
           <div class="scene mono">
@@ -272,24 +275,24 @@
       <img class="mascot mascot-nerd sticker" src="assets/mascot/nerd.webp" width="263" height="255" alt="DC mascot as a nerd with glasses" loading="lazy">
     </div>
 
-    <ol class="three-steps">
-      <li class="tstep">
+    <ol class="three-steps" data-p="how.chain">
+      <li class="tstep" data-p="how.step1">
         <p class="label label-ink">LOAD THE FOLDER</p>
-        <p>Open it in Claude Code. Type &ldquo;set up the kit&rdquo; and it installs what is missing, once.</p>
+        <p>Open the folder in Claude Code and type &ldquo;set up the kit&rdquo;. It installs whatever is missing, one time only.</p>
       </li>
       <li class="arrow-li" aria-hidden="true">
         <svg viewBox="0 0 90 36" width="90" height="36" class="arrow"><path d="M3 24C22 6 52 8 80 20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M66 10l15 10-17 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </li>
-      <li class="tstep">
+      <li class="tstep" data-p="how.step2">
         <p class="label label-blue">SAY WHAT YOU NEED</p>
-        <p>One line is enough. Add your own notes if you have them, and pick a style or let it choose.</p>
+        <p>Type one line. Add your own notes if you have them, and pick a style or let it choose.</p>
       </li>
       <li class="arrow-li" aria-hidden="true">
         <svg viewBox="0 0 90 36" width="90" height="36" class="arrow arrow-b"><path d="M3 12C26 30 56 30 80 14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M68 4l14 10-16 6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </li>
-      <li class="tstep">
+      <li class="tstep" data-p="how.step3">
         <p class="label label-yellow">SHIP THE RESULT</p>
-        <p>You get the finished work and a short report of what it checked, plus a note on what it could not.</p>
+        <p>You get the finished work and a short report of what it checked, plus a note on anything it could not do or verify.</p>
       </li>
     </ol>
   </div>

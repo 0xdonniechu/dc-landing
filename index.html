@@ -305,11 +305,10 @@
       <span class="num" aria-hidden="true">03</span>
       <p class="strike"><span class="sr-only">Doubt three: </span>&ldquo;IT ALL LOOKS THE SAME.&rdquo;</p>
     </div>
-    <h2 id="styles-title" class="h2">THREE STYLES. <span class="hl">YOUR</span> RULES.</h2>
-
     <div class="styles-grid">
       <div class="styles-left">
-        <div class="style-cards" role="group" aria-label="Pick a style">
+        <h2 id="styles-title" class="h2" data-p="styles.h2">THREE STYLES.<br class="br-s"> <span class="hl">YOUR</span> RULES.</h2>
+        <div class="style-cards" data-p="styles.picks" role="group" aria-label="Pick a style">
           <button class="style-card" type="button" data-style="build" aria-pressed="true">
             <span class="sc-thumb sc-build" aria-hidden="true"><i></i><i></i><i></i></span>
             <span class="sc-name mono">BUILD</span>
@@ -323,27 +322,27 @@
             <span class="sc-name mono">RESEARCH</span>
           </button>
         </div>
-        <div class="style-info" aria-live="polite">
+        <div class="style-info" data-p="styles.panel" aria-live="polite">
           <div data-style-desc="build">
-            <p class="style-desc">Plans the change, splits it into small tasks, writes the code, runs your tests and fixes what breaks before it shows you a diff.</p>
-            <p class="best"><span class="best-l">Best for</span> <span class="chip-o">features</span><span class="chip-o">bug fixes</span><span class="chip-o">refactors</span><span class="chip-o">scripts</span></p>
+            <p class="style-desc">Plans the change, splits it into small tasks, writes the code, runs your tests and fixes what breaks before it shows you a diff. Every task gets a goal, a scope and a check, and nothing ships until all three pass.</p>
+            <p class="best"><span class="best-l">Best for</span> <span class="chip-o">apps</span><span class="chip-o">bugs</span><span class="chip-o">tests</span><span class="chip-o">tools</span></p>
           </div>
           <div data-style-desc="write" hidden>
-            <p class="style-desc">Drafts docs, specs and posts from your notes in your own voice, then checks every claim against the source before it hands over.</p>
-            <p class="best"><span class="best-l">Best for</span> <span class="chip-o">docs</span><span class="chip-o">specs</span><span class="chip-o">newsletters</span><span class="chip-o">READMEs</span></p>
+            <p class="style-desc">Drafts docs, specs and posts from your notes in your own voice, then checks every claim against the source before it hands over. You get the draft, a list of what it checked and a flag on anything it could not back up.</p>
+            <p class="best"><span class="best-l">Best for</span> <span class="chip-o">docs</span><span class="chip-o">specs</span><span class="chip-o">posts</span><span class="chip-o">notes</span></p>
           </div>
           <div data-style-desc="research" hidden>
-            <p class="style-desc">Reads a pile of sources, keeps a link beside every claim and hands back a short brief that also says what is still unknown.</p>
-            <p class="best"><span class="best-l">Best for</span> <span class="chip-o">market notes</span><span class="chip-o">comparisons</span><span class="chip-o">due diligence</span><span class="chip-o">reading lists</span></p>
+            <p class="style-desc">Reads a pile of sources, keeps a link beside every claim and hands back a short brief that also says what is still unknown. Each finding names its source, so you can open it, check it and judge it for yourself.</p>
+            <p class="best"><span class="best-l">Best for</span> <span class="chip-o">briefs</span><span class="chip-o">audits</span><span class="chip-o">facts</span><span class="chip-o">links</span></p>
           </div>
         </div>
-        <div class="swatch-row">
+        <div class="swatch-row" data-p="styles.paint">
           <span class="swatches" aria-hidden="true"><i style="--c:#0038a8;--r:-6deg"></i><i style="--c:#141414;--r:-2deg"></i><i style="--c:#f2c230;--r:2deg"></i><i style="--c:#fffdf8;--r:5deg"></i><i class="rainbow" style="--r:8deg"></i></span>
           <p><strong>Blue, ink, yellow, paper or your own colour.</strong> One setting, and your handle goes on every report.</p>
         </div>
       </div>
 
-      <div class="preview" aria-hidden="true">
+      <div class="preview" data-p="styles.phone" aria-hidden="true">
         <div class="screen">
           <div class="bar"><i></i><i></i><i></i><span id="preview-title">style &middot; build</span></div>
           <div class="scene mono preview-scene" data-style-preview="build">
@@ -389,19 +388,19 @@
 </section>
 
 <!-- 8. TINTED: CHECKS -->
-<section class="band tint" data-p="check" aria-labelledby="check-title">
+<section class="band tint check-band" data-p="check" aria-labelledby="check-title">
   <div class="wrap check-grid">
-    <div>
-      <h2 id="check-title" class="h2">IT PLANS FIRST, THEN <span class="hl">CHECKS ITS OWN WORK</span></h2>
-      <p class="lead">Ask an agent for a job on its own and you end up being the checker: you read it, spot what is off and prompt again. The kit writes a plan first, builds against it, then scores itself and only hands you work that passes.</p>
-      <ul class="checklist">
-        <li><span class="tick" aria-hidden="true"></span><p><strong>A plan before the build.</strong> Every task has a goal, a scope and a check, written down before any code.</p></li>
-        <li><span class="tick" aria-hidden="true"></span><p><strong>Two gates: scope and quality.</strong> It finds what drifted outside the task and what is weak, and fixes both first.</p></li>
-        <li><span class="tick" aria-hidden="true"></span><p><strong>A reviewer that is not the builder.</strong> A second agent reads the diff cold and returns pass or fail with reasons.</p></li>
+    <div class="check-copy">
+      <h2 id="check-title" class="h2" data-p="check.h2">IT PLANS FIRST, THEN <span class="hl">CHECKS ITS OWN WORK</span></h2>
+      <p class="lead lead-narrow" data-p="check.lead">Ask an agent for a job on its own and you end up being the checker: you read it, spot what is off, prompt again, repeat. The kit writes a plan for every task before any code, builds against it, then scores its own work and only hands you what passes.</p>
+      <ul class="checklist" data-p="check.list">
+        <li><span class="tick" aria-hidden="true"></span><p><strong>A plan before the build.</strong> Every task gets a goal, a scope and a check, written down before any code. No guessing.</p></li>
+        <li><span class="tick" aria-hidden="true"></span><p><strong>Two gates: scope and quality.</strong> It finds what drifted outside the task and what is weak, and fixes both before anything reaches you for review.</p></li>
+        <li><span class="tick" aria-hidden="true"></span><p><strong>A reviewer that is not the builder.</strong> A second agent reads the diff cold, runs the checks again and returns pass or fail with written reasons, all before you see it.</p></li>
       </ul>
     </div>
     <div class="report-wrap">
-      <figure class="report" id="report">
+      <figure class="report" id="report" data-p="check.report">
         <span class="tape" aria-hidden="true"></span>
         <div class="report-head mono"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span>check &middot; report.md</span><span class="status-chip">FIXING</span></div>
         <div class="gauge-row">
@@ -414,14 +413,14 @@
         </div>
         <ul class="rows mono">
           <li><span>plan written before any code</span><b>&#10003;</b></li>
-          <li><span>scope &middot; stays inside the task</span><b>2 found</b></li>
+          <li><span>scope &middot; inside the task</span><b>2 found</b></li>
           <li><span>every change has a test</span><b>&#10003;</b></li>
           <li><span>effort &middot; original work</span><b>too low</b></li>
           <li><span>tests pass on the first run</span><b>&#10003;</b></li>
           <li><span>no secrets in the <code>diff</code></span><b>&#10003;</b></li>
         </ul>
       </figure>
-      <img class="mascot mascot-skeptic sticker" src="assets/mascot/skeptical.webp" width="264" height="255" alt="DC mascot looking skeptical" loading="lazy">
+      <img class="mascot mascot-skeptic sticker" data-p="check.mascot" src="assets/mascot/skeptical.webp" width="264" height="255" alt="DC mascot looking skeptical" loading="lazy">
     </div>
   </div>
 </section>

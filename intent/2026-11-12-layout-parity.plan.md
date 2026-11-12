@@ -54,6 +54,8 @@ Breakpoints 1100/900/700; `.wrap` 1180 wide with the reference's side gutters at
 ### T3 Hero
 Four phones (left, inner-left, centre, inner-right) with their labels and the reference's boxes. The mascot stands at the right like the reference's presenter image. Kicker, h1, lead, prompt bar, CTA row and launch tape take the reference's boxes. The centre phone keeps the HyperFrames loop.
 
+Fix round 3 (owner approval 2026-11-13): hero geometry in rem so it scales with the user's text size, and a text-zoom case (150% and 200% root size: the CTA, prompt bar and launch tape are not painted over by a phone) in `scripts/probe-media.mjs`.
+
 ### T4 Watch section and proof tickets
 - **Watch section.** A new 60-second block: kicker, h2, a 980×561 frame at 1440, a play button and a CTA row. Video 1 (with sound) plays centred inside the frame on a brand background, only on the user's click.
 - **Proof tickets.** Three horizontal cards (about 353×208 at 1440) with a 100×173 thumbnail. A tap opens the video in a `<dialog>`: card 1 plays video 2, card 2 plays video 3, card 3 plays the hero loop.
@@ -95,7 +97,7 @@ Four phones (left, inner-left, centre, inner-right) with their labels and the re
 - check: `node scripts/parity.mjs --only header,ticker`
 
 ### T3 (builder) Hero
-- allow: `index.html` `site.css` `site.js` `assets/mascot/**`
+- allow: `index.html` `site.css` `site.js` `assets/mascot/**` `scripts/probe-media.mjs`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only hero`
 

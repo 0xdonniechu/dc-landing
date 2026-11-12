@@ -18,7 +18,7 @@ The owner's rule: the media can be illustrative, but every component's size and 
 The page has the reference's structure and geometry, with our brand, copy, mascot and media.
 
 Success criteria, all measured by one script (`scripts/parity.mjs`) that loads the reference and our page in the same local Chromium at the widths 1440, 1100, 950, 768 and 390 px:
-1. **Sections:** the same list of top-level blocks in the same order at every width. There are 13: header, hero, watch, myth/night, proof, how, styles, self-check, inside, price, FAQ, final, footer.
+1. **Sections:** the same list of top-level blocks in the same order at every width. There are 14: header, hero, ticker, watch, myth/night, proof, how, styles, self-check, inside, price, FAQ, final, footer (the plan made the ticker its own block), plus the floating badge.
 2. **Section heights:** the height of every section is within ±3% of the reference (or ±24 px, whichever is larger), and its top within ±1% (or ±24 px), at every width. The ±1% on tops is an owner decision of 2026-11-12, tightened from ±3%.
 3. **Components:** a named map pairs each of our components with the reference's. It covers headings, prompt bar, CTA, phones, mascot, ticker, terminal, step list, cards, video frame, price box, FAQ items and badge. Each paired box is within ±12 px in position and ±4% in width and height at every width. The heading font size is within ±2%.
 4. **Breakpoints:** our layout changes at the same widths as the reference (1100, 900, 700 px).

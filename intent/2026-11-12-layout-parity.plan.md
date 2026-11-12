@@ -21,7 +21,8 @@ Intent: `intent/2026-11-12-layout-parity.md` (approved). Branch: `layout-parity`
   - Exit 0 when every check passes, 1 otherwise.
   - Writes `.check/parity/<width>.md`: a table of every row with the reference value, ours, the difference and PASS/FAIL.
   - Writes `.check/parity/<width>-ref.png` and `<width>-ours.png`: full-page screenshots, side by side, for the owner.
-  - `--report-only` always exits 0, for use while building.
+  - `--report-only` exits 0 whatever the rows say, for use while building; like every mode it exits 2 when it cannot measure (our fonts did not load, no snapshot).
+  - Known limits (review of T1, accepted): breakpoints are read from `@media` rules only, not from `media` attributes or script; a font counts per family, not per weight; a hidden duplicate of a `data-p` counts as a duplicate; sizes have a 2 px floor.
 
 ## Files (in the order of work)
 1. `scripts/parity.mjs`, `scripts/parity-map.json`, `scripts/parity-ref.json` (new, T1)

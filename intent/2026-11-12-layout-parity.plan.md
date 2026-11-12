@@ -1,4 +1,4 @@
-status: building (one-prompt run, started by the owner 2026-11-12) # draft → planned → building → verified
+status: verified (one-prompt run, started by the owner 2026-11-12) # draft → planned → building → verified
 
 # Plan: layout parity with the reference site
 
@@ -154,12 +154,17 @@ T8 also takes the T4 review's MINORs: the watch CTA's `min-width` makes it 444 p
 
 ## Result
 
-1. (filled after the final merge)
-2. (filled after the final merge)
-3. (filled after the final merge)
+1. PASS at d0bfe88: `node scripts/parity.mjs` exit 0; rows 363/363 at 1440, 1100 and 950, 357/357 at 768 and 390 (block list, tops, heights, components, heading sizes, breakpoints, page height). Tables and pairs in `.check/parity/`.
+2. PASS at d0bfe88: `node scripts/check.mjs` exit 0.
+3. PASS at d0bfe88: `node scripts/probe-media.mjs` exit 0, 545 PASS, 0 FAIL (hero, watch, dialog, modified clicks, text zoom at 24/32 px roots over 14 blocks at 5 widths).
 4. PASS, `node scripts/deploy-check.mjs` against `.check/static-server.mjs` serving the T9 tree (layout-parity at cd5955a plus the docs): 31/31 ok, 0 problems.
-5. (filled after the preview deploy)
+5. PASS: preview https://dc-landing-pxtkgb58h-chuu3112s-projects.vercel.app (built from d0bfe88, team chuu3112s-projects); `node scripts/deploy-check.mjs <preview> --header "x-vercel-protection-bypass: …"` 31/31 ok, 0 problems (without the header the preview's protection answers 302, as expected).
 6. PASS, on two scratch copies of the same tree: with the shared `@media (max-width: 900px)` block changed to 960px the gate exits 1 with 83 failing rows (the breakpoint row at every width, page height +1826 px at 950, block tops and heights); with `.terminal { width: 110% }` it exits 1 with 5 failing rows, `how.terminal.w` at every width (+35 to +70 px). Unchanged, the same tree exits 0 (Proof 1).
-7. (filled after the final merge)
+7. PASS: `sdlc-check.py converge` (run after this Result was written; see the commit that records it).
 8. not run: the owner looks at the pairs in `.check/parity/`.
+
+Reviews: every task T1–T8 has a reviewer PASS (T1 at 4b920f1 and T2 at 138bc7e were recorded as `none` by the loop hook before coding-playbook PR #72/#73 fixed it; T3–T8 are on record in the run). FAILs fixed: T2 r1, T3 r1–r2, T4 r1, T5 r1, T7 r1.
+
+Open MINOR items from the reviews, left for a follow-up: the h1 still does not grow with text size above about 1333 px (the vw term wins); `ZOOM_EDGE_SKIP` `.hero .ph` also exempts the pause control and tags; the zoom check never opens the FAQ answers and does not cover the badge; the price sticker box and the how step circle at 390 px / 200%; dead rules at site.css (the T8 review's line 723); squeeze threshold of 4 px.
+Owner to confirm the copy: kit items 02, 03, 05, 08 and the styles/self-check lines describe what the kit does ("never touches a file that is not on the list", "nothing ships until all three pass", ...).
 

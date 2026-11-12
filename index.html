@@ -20,8 +20,8 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="site-header">
-  <div class="wrap header-in">
-    <a class="brand" href="#top" aria-label="DONNIECHU Agent Kit, back to top">
+  <div class="wrap header-in" data-p="header">
+    <a class="brand" data-p="header.logo" href="#top" aria-label="DONNIECHU Agent Kit, back to top">
       <span class="wordmark">DONNIECHU</span>
       <span class="chip">AGENT KIT</span>
     </a>
@@ -30,14 +30,14 @@
       <a href="#styles">Styles</a>
       <a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-sm" href="#price" data-cta>GET IT <span class="pill-price" data-bind="price">$39</span></a>
+    <a class="btn btn-sm" data-p="header.cta" href="#price" data-cta>GET IT <span class="pill-price" data-bind="price">$39</span></a>
   </div>
 </header>
 
 <main id="main">
 
 <!-- 2. HERO -->
-<section class="hero band" id="top" aria-labelledby="hero-title">
+<section class="hero band" data-p="hero" id="top" aria-labelledby="hero-title">
   <div class="wrap hero-in">
     <p class="kicker hand">one prompt in, checked work out</p>
     <h1 id="hero-title" class="h1">ONE PROMPT.<br><span class="hl">REAL WORK</span> DONE.</h1>
@@ -135,36 +135,35 @@
     </div>
     <img class="mascot mascot-wave sticker" src="assets/mascot/wave.webp" width="263" height="256" alt="DC mascot waving" fetchpriority="high">
   </div>
-
-  <div class="ticker" role="group" data-early hidden>
-    <div class="ticker-track" id="ticker-track">
-      <div class="ticker-group">
-        <span class="mono t-i">THEN <span data-bind="price-later">$39</span></span><i class="star">&#9733;</i>
-        <span class="mono t-i">SAVE <span data-bind="save">$20</span> TODAY</span><i class="star">&#9733;</i>
-        <span class="mono t-i t-box">EARLY PRICE <span data-bind="price">$19</span></span><i class="star">&#9733;</i>
-        <span class="mono t-i">ENDS IN <span data-countdown>&mdash;</span></span><i class="star">&#9733;</i>
-      </div>
-      <div class="ticker-group" aria-hidden="true">
-        <span class="mono t-i">THEN <span data-bind="price-later">$39</span></span><i class="star">&#9733;</i>
-        <span class="mono t-i">SAVE <span data-bind="save">$20</span> TODAY</span><i class="star">&#9733;</i>
-        <span class="mono t-i t-box">EARLY PRICE <span data-bind="price">$19</span></span><i class="star">&#9733;</i>
-        <span class="mono t-i">ENDS IN <span data-countdown>&mdash;</span></span><i class="star">&#9733;</i>
-      </div>
-      <div class="ticker-group" aria-hidden="true">
-        <span class="mono t-i">THEN <span data-bind="price-later">$39</span></span><i class="star">&#9733;</i>
-        <span class="mono t-i">SAVE <span data-bind="save">$20</span> TODAY</span><i class="star">&#9733;</i>
-        <span class="mono t-i t-box">EARLY PRICE <span data-bind="price">$19</span></span><i class="star">&#9733;</i>
-        <span class="mono t-i">ENDS IN <span data-countdown>&mdash;</span></span><i class="star">&#9733;</i>
-      </div>
-    </div>
-  </div>
-  <div class="wrap ticker-ctl-row" data-early hidden>
-    <button class="ticker-ctl mono" type="button" id="ticker-ctl">Pause ticker</button>
-  </div>
 </section>
 
+<!-- 3b. TICKER -->
+<div class="ticker" data-p="ticker" role="group" data-early hidden>
+  <div class="ticker-track" id="ticker-track">
+    <div class="ticker-group">
+      <span class="mono t-i t-opt">THEN <span data-bind="price-later">$39</span></span><i class="star t-opt">&#9733;</i>
+      <span class="mono t-i t-opt">SAVE <span data-bind="save">$20</span> TODAY</span><i class="star t-opt">&#9733;</i>
+      <span class="mono t-i t-box">EARLY PRICE <span data-bind="price">$19</span></span><i class="star">&#9733;</i>
+      <span class="mono t-i">ENDS IN <span data-countdown>&mdash;</span></span><i class="star">&#9733;</i>
+    </div>
+    <div class="ticker-group" aria-hidden="true">
+      <span class="mono t-i t-opt">THEN <span data-bind="price-later">$39</span></span><i class="star t-opt">&#9733;</i>
+      <span class="mono t-i t-opt">SAVE <span data-bind="save">$20</span> TODAY</span><i class="star t-opt">&#9733;</i>
+      <span class="mono t-i t-box">EARLY PRICE <span data-bind="price">$19</span></span><i class="star">&#9733;</i>
+      <span class="mono t-i">ENDS IN <span data-countdown>&mdash;</span></span><i class="star">&#9733;</i>
+    </div>
+    <div class="ticker-group" aria-hidden="true">
+      <span class="mono t-i t-opt">THEN <span data-bind="price-later">$39</span></span><i class="star t-opt">&#9733;</i>
+      <span class="mono t-i t-opt">SAVE <span data-bind="save">$20</span> TODAY</span><i class="star t-opt">&#9733;</i>
+      <span class="mono t-i t-box">EARLY PRICE <span data-bind="price">$19</span></span><i class="star">&#9733;</i>
+      <span class="mono t-i">ENDS IN <span data-countdown>&mdash;</span></span><i class="star">&#9733;</i>
+    </div>
+  </div>
+  <button class="ticker-ctl mono" type="button" id="ticker-ctl">Pause ticker</button>
+</div>
+
 <!-- 4. DARK: THINKING -->
-<section class="band dark intro" aria-labelledby="think-title">
+<section class="band dark intro" data-p="night" aria-labelledby="think-title">
   <div class="wrap intro-in">
     <p class="kicker hand yellow-text">hmm&hellip;</p>
     <h2 id="think-title" class="h2">YOU MIGHT BE<br><span class="hl">THINKING&hellip;</span></h2>
@@ -178,7 +177,7 @@
 </section>
 
 <!-- 5. PROOF -->
-<section id="proof" class="band dark" aria-labelledby="proof-title">
+<section id="proof" class="band dark" data-p="proof" aria-labelledby="proof-title">
   <div class="wrap">
     <div class="quote-row" id="myth-1">
       <span class="num" aria-hidden="true">01</span>
@@ -242,7 +241,7 @@
 </section>
 
 <!-- 6. HOW -->
-<section id="how" class="band light" aria-labelledby="how-title">
+<section id="how" class="band light" data-p="how" aria-labelledby="how-title">
   <div class="wrap">
     <div class="quote-row" id="myth-2">
       <span class="num" aria-hidden="true">02</span>
@@ -309,7 +308,7 @@
 </section>
 
 <!-- 7. STYLES -->
-<section id="styles" class="band light styles-band" aria-labelledby="styles-title">
+<section id="styles" class="band light styles-band" data-p="styles" aria-labelledby="styles-title">
   <div class="wrap">
     <div class="quote-row" id="myth-3">
       <span class="num" aria-hidden="true">03</span>
@@ -399,7 +398,7 @@
 </section>
 
 <!-- 8. TINTED: CHECKS -->
-<section class="band tint" aria-labelledby="check-title">
+<section class="band tint" data-p="check" aria-labelledby="check-title">
   <div class="wrap check-grid">
     <div>
       <h2 id="check-title" class="h2">IT PLANS FIRST, THEN <span class="hl">CHECKS ITS OWN WORK</span></h2>
@@ -437,7 +436,7 @@
 </section>
 
 <!-- 9. KIT -->
-<section class="band light" aria-labelledby="kit-title">
+<section class="band light" data-p="inside" aria-labelledby="kit-title">
   <div class="wrap">
     <h2 id="kit-title" class="h2">WHAT'S IN <span class="hl">THE KIT</span></h2>
     <ol class="kit-list">
@@ -454,7 +453,7 @@
 </section>
 
 <!-- 10. PRICE -->
-<section id="price" class="band tint" aria-labelledby="price-title">
+<section id="price" class="band tint" data-p="price" aria-labelledby="price-title">
   <div class="wrap price-grid">
     <div class="receipt-col">
       <div class="receipt-wrap">
@@ -503,7 +502,7 @@
 </section>
 
 <!-- 11. FAQ -->
-<section id="faq" class="band light" aria-labelledby="faq-title">
+<section id="faq" class="band light" data-p="faq" aria-labelledby="faq-title">
   <div class="wrap">
     <h2 id="faq-title" class="h2">GOOD <span class="hl">QUESTIONS</span></h2>
     <div class="faq-grid">
@@ -525,7 +524,7 @@
 </section>
 
 <!-- 12. FINAL -->
-<section class="band blue final" aria-labelledby="final-title">
+<section class="band blue final" data-p="final" aria-labelledby="final-title">
   <div class="wrap final-in">
     <h2 id="final-title" class="h2 h2-xl">STOP PROMPTING.<br><span class="hl-ink">START SHIPPING.</span></h2>
     <p class="lead">One folder, three styles, and work you never had to check twice.</p>
@@ -546,7 +545,7 @@
 
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer" data-p="footer">
   <div class="wrap foot-in">
     <p class="foot-l">DC Agent Kit &middot; <a class="ulink" href="https://x.com/donniechublog" rel="noopener">@donniechublog</a></p>
     <p class="foot-r">Every number on this page is a sample until launch. What you get out of the kit depends on what you ask it to do.</p>
@@ -554,7 +553,7 @@
   </div>
 </footer>
 
-<a class="float-badge" id="float-badge" href="#price" data-cta aria-label="Get the kit, $39">
+<a class="float-badge" data-p="badge" id="float-badge" href="#price" data-cta aria-label="Get the kit, $39">
   <svg viewBox="0 0 120 120" width="112" height="112" aria-hidden="true" focusable="false">
     <circle cx="60" cy="60" r="58" class="fb-bg"/>
     <g class="fb-ring">

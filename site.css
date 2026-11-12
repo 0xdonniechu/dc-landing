@@ -17,7 +17,7 @@
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
   --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
 
-  --gutter: clamp(16px, 4vw, 40px);
+  --gutter: clamp(18px, 4vw, 40px);
   --section-y: clamp(64px, 9vw, 112px);
   --bw: 3px;                 /* ink border */
   --shadow: 6px 6px 0 var(--ink);
@@ -25,8 +25,9 @@
   --focus: var(--ink);
 
   --fs-body: clamp(1rem, .9rem + .35vw, 1.1875rem);
-  --fs-h1: clamp(2.9rem, 6.6vw, 5.95rem);
-  --fs-h2: clamp(2.15rem, 4vw, 3.6rem);
+  --fs-h1: clamp(44px, 6.6vw, 95.04px);
+  --fs-h2: clamp(32px, 4.4vw, 58px);
+  --fs-h2-xl: clamp(40px, 6vw, 84px);
   --fs-h3: clamp(1.3rem, 1.8vw, 1.7rem);
   color-scheme: light;
 }
@@ -59,7 +60,7 @@ button { font: inherit; color: inherit; }
 .skip:focus { top: 12px; }
 .mono { font-family: var(--font-mono); }
 .hand { font-family: var(--font-hand); font-weight: 600; }
-.wrap { width: min(1100px, 100% - 2 * var(--gutter)); margin-inline: auto; }
+.wrap { width: min(1180px, 100%); padding-inline: var(--gutter); margin-inline: auto; }
 .y { color: var(--yellow); font-weight: 700; }
 .yellow-text { color: var(--yellow); }
 
@@ -67,7 +68,7 @@ button { font: inherit; color: inherit; }
 .h1, .h2, .h3 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; letter-spacing: .005em; }
 .h1 { font-size: var(--fs-h1); line-height: 1.02; }
 .h2 { font-size: var(--fs-h2); line-height: 1.04; text-wrap: balance; }
-.h2-xl { font-size: clamp(2.7rem, 7vw, 6.2rem); line-height: 1; }
+.h2-xl { font-size: var(--fs-h2-xl); line-height: 1; }
 .lead { font-size: var(--fs-body); color: var(--ink-2); max-width: 36em; margin-top: 18px; }
 .lead-narrow { max-width: 34em; }
 .fine { font-size: .875rem; font-weight: 500; color: var(--ink-2); margin-top: 14px; }
@@ -124,11 +125,12 @@ button { font: inherit; color: inherit; }
 .pill-blue { background: var(--blue); }
 
 /* Header */
-.site-header { position: sticky; top: 0; z-index: 50; background: rgba(247, 245, 240, .93); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(20, 20, 20, .1); }
-.header-in { display: flex; align-items: center; gap: 18px; min-height: 76px; padding-block: 10px; }
-.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; margin-right: auto; }
-.wordmark { font-family: var(--font-display); font-size: 1.75rem; letter-spacing: .01em; line-height: 1; }
-.chip { font: 700 .72rem/1 var(--font-mono); letter-spacing: .08em; background: var(--blue); color: var(--cream); border: 2.5px solid var(--ink); border-radius: 8px; padding: 6px 9px; rotate: -3deg; box-shadow: 2px 2px 0 var(--ink); }
+.site-header { position: sticky; top: 0; z-index: 50; background: rgba(247, 245, 240, .93); backdrop-filter: blur(6px); box-shadow: 0 1px 0 rgba(20, 20, 20, .1); }
+.header-in { display: flex; align-items: center; gap: 18px; height: 83px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; width: 168px; height: 26px; text-decoration: none; margin-right: auto; }
+.wordmark { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: .01em; line-height: 1; }
+.chip { font: 700 .62rem/1 var(--font-mono); letter-spacing: .06em; white-space: nowrap; background: var(--blue); color: var(--cream); border: 2px solid var(--ink); border-radius: 7px; padding: 5px 7px; rotate: -3deg; box-shadow: 2px 2px 0 var(--ink); }
+.header-in .btn { width: 135px; height: 47px; justify-content: center; padding-block: 0; gap: 8px; }
 .nav { display: flex; gap: 26px; }
 .nav a { font-weight: 500; font-size: 1rem; text-decoration: none; color: var(--ink-2); padding: 6px 2px; border-bottom: 2px solid transparent; }
 .nav a:hover { color: var(--ink); border-bottom-color: var(--blue); }
@@ -225,17 +227,20 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 }
 .mascot-wave { right: max(8px, calc(50% - 600px)); bottom: -4px; width: clamp(140px, 17vw, 230px); rotate: 5deg; }
 
-/* Ticker */
+/* Ticker: its own block after the hero. Box 110% of the page wide, 44 px tall, turned -1.5deg;
+   the negative margins leave 10 px of flow so it sits over the hero/watch join. */
+main { overflow-x: clip; }
 .ticker {
-  position: relative; z-index: 5; margin: -44px -3% 0; rotate: -1.6deg;
+  position: relative; z-index: 5; margin: -17px -5%; rotate: -1.5deg;
+  display: flex; align-items: center; height: 44px;
   background: var(--yellow); color: var(--ink);
   border-block: 3px solid var(--ink); box-shadow: 0 5px 0 var(--ink);
-  overflow: clip; padding-block: 15px;
+  overflow: clip;
 }
 .ticker-track { display: flex; width: max-content; }
 .ticker-group { display: flex; align-items: center; flex: none; gap: 28px; padding-right: 28px; }
 .t-i { font-weight: 700; font-size: clamp(.9rem, .8rem + .3vw, 1.1rem); letter-spacing: .06em; white-space: nowrap; }
-.t-box { background: var(--ink); color: var(--cream); padding: 6px 10px; border-radius: 4px; }
+.t-box { background: var(--ink); color: var(--cream); padding: 3px 10px; border-radius: 4px; }
 .star { color: var(--blue); font-style: normal; font-size: 1.15rem; }
 @media (prefers-reduced-motion: no-preference) {
   .ticker-track { animation: marquee 34s linear infinite; }
@@ -244,20 +249,18 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 @keyframes marquee { to { transform: translateX(calc(-100% / 3)); } }
 @media (prefers-reduced-motion: reduce) {
   .ticker-group[aria-hidden="true"] { display: none; }
-  .ticker { margin-inline: 0; }
   .ticker-track { width: 100%; justify-content: center; }
-  .ticker-group { flex-wrap: wrap; justify-content: center; padding-inline: 16px; }
-  .ticker-ctl-row { display: none; }
+  .ticker-group { justify-content: center; padding-inline: 16px; }
+  .ticker-ctl { display: none; }
 }
-.ticker-ctl-row { display: flex; justify-content: flex-end; padding-top: 22px; }
-.ticker-ctl { background: transparent; border: 2px solid var(--ink); border-radius: 999px; padding: 5px 14px; font-size: .75rem; font-weight: 700; cursor: pointer; }
+.ticker-ctl { position: absolute; z-index: 1; right: calc(5% + 14px); top: 50%; translate: 0 -50%; background: var(--paper); border: 2px solid var(--ink); border-radius: 999px; padding: 4px 12px; font-size: .75rem; font-weight: 700; line-height: 1.2; cursor: pointer; }
 .ticker-ctl:hover { background: var(--ink); color: var(--cream); }
 .hero { padding-bottom: 28px; }
 
 /* Intro dark */
 .intro { padding-bottom: 0; }
 .intro-in { position: relative; z-index: 2; padding-bottom: clamp(48px, 7vw, 88px); }
-.intro .h2 { font-size: clamp(2.4rem, 4.6vw, 4rem); margin-top: 6px; }
+.intro .h2 { font-size: var(--fs-h2-xl); margin-top: 6px; }
 .kicker.yellow-text { color: var(--yellow); rotate: -3deg; display: inline-block; font-size: 1.7rem; }
 .pills { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
 .pill-link { font: 700 .82rem/1 var(--font-mono); letter-spacing: .06em; text-decoration: none; border: 2px solid rgba(247, 245, 240, .5); border-radius: 999px; padding: 12px 16px; color: var(--cream); }
@@ -495,8 +498,11 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   html.js .reveal.in { opacity: 1; translate: 0 0; }
 }
 
-/* Tablet and mobile */
-@media (max-width: 960px) {
+/* Breakpoints: 1100, 900 and 700 px, the same as the reference */
+@media (max-width: 1100px) {
+  .nav { gap: 18px; }
+}
+@media (max-width: 900px) {
   .how-grid, .styles-grid, .check-grid, .price-grid { grid-template-columns: 1fr; }
   .proof-cards { grid-template-columns: 1fr; max-width: 520px; }
   .phone-tall { margin-top: 24px; }
@@ -505,7 +511,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .mascot-money { right: -20px; }
   .mascot-think { opacity: .9; }
 }
-@media (max-width: 720px) {
+@media (max-width: 700px) {
   .three-steps { grid-template-columns: 1fr; gap: 26px; margin-top: 56px; }
   .arrow-li { display: none; }
   .kit-list { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
@@ -524,8 +530,6 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .fan-wrap { height: 360px; }
   .mascot-wave { width: 112px; right: 4px; bottom: 0; }
   .tag { font-size: .6rem; padding: 5px 8px; }
-  .ticker { margin-top: -30px; }
-  .ticker-ctl-row { justify-content: center; }
   .btn-lg { white-space: normal; }
   .cta-row .btn { width: 100%; justify-content: center; }
   .mascot-think { width: 126px; right: 8px; }
@@ -543,11 +547,13 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .mascot-money { right: -6px; bottom: -44px; width: 100px; }
   .gauge-row { gap: 14px; }
   .proof-card { padding: 12px; }
-}
-@media (max-width: 560px) {
+  .header-in { height: 93px; }
+  .brand { width: 157px; height: 39px; }
   .chip { display: none; }
-  .wordmark { font-size: 1.5rem; }
+  .wordmark { font-size: 1.75rem; }
   .btn-sm { font-size: .95rem; padding: 9px 12px; }
+  .header-in .btn { width: 122px; height: 57px; }
+  .ticker { height: 42px; margin-block: -18px; }
   .style-cards { flex-wrap: nowrap; gap: 8px; }
   .style-card { flex: 1 1 0; min-width: 0; width: auto; padding: 6px 6px 8px; }
   .sc-thumb { height: 70px; padding: 8px; }
@@ -555,4 +561,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .sc-name { font-size: .7rem; letter-spacing: .06em; }
   .cd { min-width: 56px; }
   .swatch-row { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  .t-opt { display: none; }
 }

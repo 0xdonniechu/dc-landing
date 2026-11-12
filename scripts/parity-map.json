@@ -1,9 +1,9 @@
 {
   "_note": "Pairs our blocks and components with the reference's. 'ref' is a CSS selector on the reference page (with 'i' = index into querySelectorAll, default 0); 'ours' is always the data-p attribute named here, so the markup carries the contract. 'font': also compare the computed font size. 'fixed': measured against the viewport after scrolling, not part of the block order.",
   "blocks": [
-    { "name": "header", "ref": "body > header" },
+    { "name": "header", "ref": "body > header", "tight": true },
     { "name": "hero", "ref": "section.hero" },
-    { "name": "ticker", "ref": "div.ticker" },
+    { "name": "ticker", "ref": "div.ticker", "tight": true },
     { "name": "watch", "ref": "#watch" },
     { "name": "night", "ref": "section.night:not(#proof)" },
     { "name": "proof", "ref": "#proof" },

@@ -98,8 +98,11 @@ async function measure(page, side) {
     // Fonts: a fallback font changes every text box, so a page whose own fonts did not load is not measured.
     const fam = el => (getComputedStyle(el).fontFamily.split(',')[0] || '').trim().replace(/^["']|["']$/g, '');
     const generic = /^(serif|sans-serif|monospace|cursive|fantasy|system-ui|ui-\w+)$/;
+    // A family counts as present only when one of its FontFaces actually loaded: offline, the web-font stylesheet
+    // fails, no FontFace exists, and document.fonts.check() would wrongly say yes.
+    const loaded = new Set([...document.fonts].filter(f => f.status === 'loaded').map(f => f.family.replace(/^["']|["']$/g, '')));
     const fontsMissing = [...new Set([document.body, document.querySelector('h1'), document.querySelector('h2')].filter(Boolean).map(fam))]
-      .filter(f => f && !generic.test(f) && !document.fonts.check(`20px "${f}"`));
+      .filter(f => f && !generic.test(f) && !loaded.has(f));
     // Unmapped blocks (ours only): a top-level box that is not a mapped block, not inside one and not a container of them.
     const unmapped = [];
     if (side === 'ours') {
@@ -149,8 +152,13 @@ async function measure(page, side) {
   return data;
 }
 
-async function load(browser, url, w) {
+// Our early-price pieces show only before `data-deadline`, so our page is measured at a fixed time before it:
+// the same layout as the reference's launch state, whatever day the gate runs.
+const OUR_CLOCK = new Date('2026-11-12T12:00:00+07:00');
+
+async function load(browser, url, w, fixedClock) {
   const page = await browser.newPage({ viewport: { width: w, height: HEIGHT }, reducedMotion: 'reduce' });
+  if (fixedClock) await page.clock.setFixedTime(fixedClock);
   await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
   return page;
 }
@@ -185,7 +193,8 @@ function compare(ref, ours, w) {
       for (const k of ['w', 'h']) row('badge', `${b.name}.${k}`, r[k], o[k], within(o[k], r[k], TOL.sizePct, TOL.sizePx));
       continue;
     }
-    row('block', `${b.name}.h`, r.h, o.h, within(o.h, r.h, TOL.blockPct, TOL.blockPx));
+    // A thin block that is itself a component (header, ticker: "tight" in the map) takes the component tolerance.
+    row('block', `${b.name}.h`, r.h, o.h, b.tight ? within(o.h, r.h, TOL.sizePct, TOL.sizePx) : within(o.h, r.h, TOL.blockPct, TOL.blockPx));
     row('block', `${b.name}.x`, r.x, o.x, within(o.x, r.x, 0, TOL.posPx));
     row('block', `${b.name}.w`, r.w, o.w, within(o.w, r.w, TOL.sizePct, TOL.sizePx));
     if (!ONLY) row('block', `${b.name}.top`, r.y, o.y, within(o.y, r.y, TOL.blockPct, TOL.blockPx));
@@ -236,7 +245,7 @@ async function main() {
   for (const w of WIDTHS) {
     const ref = REF.widths[w];
     if (!ref) { console.error(`no reference numbers for ${w}px`); failed++; continue; }
-    const page = await load(browser, ourUrl, w);
+    const page = await load(browser, ourUrl, w, OUR_CLOCK);
     const ours = await measure(page, 'ours');
     if (ours.fontsMissing.length) {
       console.error(`${w}px: our fonts did not load (${ours.fontsMissing.join(', ')}), offline? Not measured.`);

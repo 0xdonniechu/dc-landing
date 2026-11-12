@@ -24,27 +24,32 @@ Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and ke
 | Header | CTA | GET IT + price pill | `.site-header .btn` |
 | Hero | Kicker | one prompt in, checked work out | `.kicker` in `#top` |
 | Hero | H1 | ONE PROMPT. / REAL WORK DONE. (highlight on REAL WORK) | `h1#hero-title` |
-| Hero | Subcopy | DC Agent Kit is a folder of Claude Code skills and agents. Type one line and it plans the job, builds it, checks its own work and hands back something finished. | `#top .lead` |
+| Hero | Subcopy | DC Agent Kit is a folder of Claude Code skills and agents. Type one line and get back finished work that has checked itself. | `#top .lead` |
 | Hero | Typed prompts (3) | build me a landing page for my newsletter / review this repo and fix what is weak / turn my notes into a weekly report | `site.js` `prompts`; first one also in `#typed` and the `.sr-only` line in `.prompt` |
 | Hero | Prompt chip | RUN | `.run-chip` |
 | Hero | CTA | GET THE KIT + price pill | `#top .btn-lg` |
 | Hero | Early badge | EARLY PRICE, SAVE $20, ends in countdown | `.badge-early` |
 | Hero | Small line | Download right away, one payment, see how it works (#how) | `#top .fine` |
-| Fan | View tags (samples) | 12,345 / 23,456 / 67,890 / 34,567 / 45,678 VIEWS | `.fan .tag` |
-| Fan | Scene text | terminal lines, checklist, self-check 6/8, skill cards (the centre phone plays the video instead) | `.fan .scene` |
+| Fan | View tags (samples) | 12,345 / 23,456 / 67,890 / 34,567 VIEWS (four phones: left, inner left, centre, inner right) | `.fan .tag` |
+| Fan | Scene text | terminal lines, launch checklist, self-check 6/8 (the centre phone plays the video instead) | `.fan .scene` |
+| Hero | Mascot | waving, `assets/mascot/wave-tall.webp`, at the right of the fan | `.mascot-wave` |
 | Fan | Centre phone video | 12 s muted loop, 540x960, no audio: typed prompt, plan ticks, self-check 6/8 to 8/8, blue SHIPPED card with the mascot. Files `assets/video/hero-loop.webm` (VP9), `hero-loop.mp4` (H.264), `hero-loop-poster.webp` (frame 0). Plays only in view and never under reduced motion; toggle chip "Pause"/"Play"; screen-reader line in `figcaption`. Re-render below. | `#hero-video`, `#hero-video-ctl`, `.phone-c figcaption`; `site.js` "hero video" |
-| Ticker | Phrases | THEN price-later, SAVE x TODAY, EARLY PRICE price, ENDS IN countdown; its `aria-label` is built in `site.js` from the price and deadline data | `.ticker-group` (three copies, two `aria-hidden`) |
-| Doubts band | H2 | YOU MIGHT BE THINKING... | `h2#think-title` |
-| Doubts band | Pills | 01 THEY NEVER FINISH, 02 IT'S HARD TO SET UP, 03 IT ALL LOOKS THE SAME | `.pills` |
+| Ticker | Phrases | THEN price-later, SAVE x TODAY, EARLY PRICE price, ENDS IN countdown; its `aria-label` is built in `site.js` from the price and deadline data; a "Pause ticker" button | `.ticker-group` (three copies, two `aria-hidden`), `#ticker-ctl` |
+| Watch (#watch) | Kicker / H2 | watch it / THE WHOLE KIT, EXPLAINED IN 60 SECONDS | `.watch .kicker`, `h2#watch-title` |
+| Watch | Video (click to play, with sound) | The owner's video 1: the SuperAgent.Social promo, 63 s, Vietnamese voice-over and burned-in subtitles, `assets/video/reels/reel-1.mp4` with `reel-1-poster.webp`; it plays centred in the landscape frame on the brand background. `aria-label` on the `<video>` and on the button (name, length, language); button text "Play with sound". | `#watch-video`, `#watch-play`; `site.js` "media" |
+| Watch | CTA | GET THE KIT + price pill | `.watch .btn-lg` |
+| Doubts band | Kicker / H2 | hmm... / YOU MIGHT BE THINKING... | `.think .kicker`, `h2#think-title` |
+| Doubts band | Index links | 01 THEY NEVER FINISH, 02 IT'S HARD TO SET UP, 03 IT ALL LOOKS THE SAME (to `#myth-1..3`) | `.idx` |
+| Doubts band | Mascot | thinking, `assets/mascot/thinking.webp` | `.think-pres` |
 | Proof (#proof, #myth-1) | Struck quote | "AGENTS NEVER FINISH THE JOB." | `#myth-1 .strike` |
 | Proof | Claim (sample number) | MINE SHIPPED 1,234+ CHECKED TASKS IN A WEEK. | `h2#proof-title` |
-| Proof | Subcopy | Every one came out of this folder from a single prompt... | `#proof .lead` |
-| Proof | 3 cards (sample numbers) | 612 / 415 / 207 TASKS DONE with the tags build / review / write style; card title names the video: SuperAgent.Social promo 1, 63 s / promo 2, 62 s / promo 3, 52 s (all three end on the free aipub.social tool), each "in Vietnamese" | `.proof-cards .big-num`, `.card-t`, `.card-tag` |
-| Proof | 3 reels (click to play, with sound) | Vietnamese promo videos, 720x1280 H.264+AAC, voice-over and burned-in Vietnamese subtitles. Files `assets/video/reels/reel-1.mp4` (63 s), `reel-2.mp4` (62 s), `reel-3.mp4` (52 s) and `reel-N-poster.webp` (360x640). Per reel: `aria-label` on the `<video>` and on `.reel-play` (name, length, "Vietnamese voice-over and burned-in subtitles"); button text "Play with sound". Play only on click, one at a time, pause when scrolled out of view; without JS the native controls work. Re-encode below. | `.proof-card .reel-video`, `.reel-play`; `site.js` "proof reels" |
+| Proof | Subcopy | Every one came out of this folder from a single prompt, and passed its own checks before I saw it. Here are three of them. | `#proof .lead` |
+| Proof | 3 tickets (sample numbers) | 612 / 415 / 207 TASKS DONE with the tags build / review / write style, a 100x173 thumbnail (the video's poster) and "PLAY" | `.tickets .big-num`, `.num-label`, `.card-tag` |
+| Proof | Ticket videos (open in a dialog) | A plain click opens the modal `<dialog>`: ticket 1 plays `assets/video/reels/reel-2.mp4` (SuperAgent.Social promo 2, 62 s), ticket 2 `reel-3.mp4` (promo 3, 52 s), both with sound, Vietnamese voice-over and subtitles; ticket 3 the hero loop (no sound, the dialog says so). Each ticket's `data-label` names the video; without JS the link opens the mp4. | `.tickets a.vt[href][data-poster][data-label]`, `#media-dialog`; `site.js` "media" |
 | Proof | Footnote + handle | Sample numbers until launch. Follow the real ones on @donniechublog (https://x.com/donniechublog) | `.footnote` |
 | How (#how, #myth-2) | Struck quote | "IT'S HARD TO SET UP." | `#myth-2 .strike` |
 | How | H2 / subcopy | YOU TYPE ONE LINE. / A plan, the build, a self-review and the hand-over... | `h2#how-title`, `#how .lead` |
-| How | Terminal prompt and 6 steps | Read the brief; Write the plan; Build the pieces; Run the checks; Review its own work; Hand it back (each with a mono note) | `#terminal` |
+| How | Terminal prompt, 6 steps, result line | Read the brief; Write the plan; Build the pieces; Run the checks; Review its own work; Hand it back (each with a mono note); "finished folder and report, ready to read" | `#terminal` |
 | How | Phone mock | set up once | `.phone-tall` |
 | How | 3-step row | LOAD THE FOLDER / SAY WHAT YOU NEED / SHIP THE RESULT, each with one sentence | `.three-steps` |
 | Styles (#styles, #myth-3) | Struck quote | "IT ALL LOOKS THE SAME." | `#myth-3 .strike` |
@@ -53,20 +58,19 @@ Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and ke
 | Styles | Descriptions + "Best for" chips | one block per style | `[data-style-desc]` |
 | Styles | Preview panels | one per style | `[data-style-preview]` |
 | Styles | Swatch line | Blue, ink, yellow, paper or your own colour. One setting, and your handle goes on every report. | `.swatch-row` |
-| Checks | H2 / paragraph | IT PLANS FIRST, THEN CHECKS ITS OWN WORK / Ask an agent for a job... | `h2#check-title`, `.check-grid .lead` |
+| Checks | H2 / paragraph | IT PLANS FIRST, THEN CHECKS ITS OWN WORK / Ask an agent for a job on its own and you end up being the checker... | `h2#check-title`, `.check-grid .lead` |
 | Checks | 3 checklist items | A plan before the build; Two gates: scope and quality; A reviewer that is not the builder | `.checklist` |
 | Checks | Report card | file name, FIXING chip, gauge 6/8 (ring in `site.css` `.ring-fg`), 6 rows (4 pass, "2 found", "too low") | `#report` |
 | Kit | H2 | WHAT'S IN THE KIT | `h2#kit-title` |
-| Kit | 8 items | PLAN SKILL, BUILDER AGENT, REVIEW AGENT, CHECK SCRIPTS, TASK CONTRACTS, MEMORY NOTES, PROJECT TEMPLATE, GUIDED SETUP, each with one line | `.kit-list` |
+| Kit | 8 items | PLAN SKILL, BUILDER AGENT, REVIEW AGENT, CHECK SCRIPTS, TASK CONTRACTS, MEMORY NOTES, PROJECT TEMPLATE, GUIDED SETUP, each with one line (two columns of four) | `.kit-list` |
 | Price (#price) | Receipt | title, 8 checked items, price, countdown, "you save today", "then", "pay once, no subscription", barcode, "thank you, now go build" | `.receipt` |
-| Price | H2 / paragraph / CTA | SET IT GOING, COME BACK TO DONE WORK / Start a job, make dinner... | `h2#price-title`, `.price-copy` |
-| Price | Requirement pills | Claude Code; A Claude plan; Mac, Windows or Linux | `.req` |
+| Price | H2 / paragraph / CTA | SET IT GOING, COME BACK TO DONE WORK / Start a job, make dinner, come back to a finished folder and a report... | `h2#price-title`, `.price-copy` |
+| Price | Requirement pills | Claude Code on your machine; Any plan that runs Claude; Mac, Windows or Linux | `.req` |
 | FAQ (#faq) | 9 questions and answers | what you do; brief; which app/plan; coding; file timing; languages; client work; price; numbers | `.faq-grid details` |
 | Final band | H2 / line | STOP PROMPTING. START SHIPPING. / One folder, three styles, and work you never had to check twice. | `h2#final-title`, `.final .lead` |
 | Final band | Countdown boxes, note | DAYS/HRS/MIN/SEC, "left at $19. Then it's $39." | `.cd-row` |
 | Footer | Product and handle | DC Agent Kit, @donniechublog | `.foot-l` |
-| Footer | Honesty note | Every number on this page is a sample until launch. What you get out of the kit depends on what you ask it to do. | `.foot-r` |
-| Footer | Line | >_ vibe working & agentic AI | `.foot-line` |
+| Footer | Honesty note | Every number on this page is a sample until launch. Results depend on what you ask. | `.foot-r` |
 | Floating badge | Ring text | GET THE KIT (repeated); accessible name "Get the kit, [early price] $N" is built in `site.js` | `#float-badge textPath` |
 
 ## Re-rendering the hero video
@@ -82,9 +86,9 @@ ffmpeg -i renders/promo-master.mp4 -vf scale=540:960 -frames:v 1 -c:v libwebp -q
 
 Keep the video 540x960 (9:16) with no audio track, and the last frame matching frame 0 so the loop is seamless. The `width`/`height` on `<video>` must stay 540/960.
 
-## Re-encoding the proof reels
+## Re-encoding the promo videos
 
-Keep each reel 720x1280 (9:16) with an AAC audio track; the `width`/`height` on `<video>` must stay 720/1280. Update the length in the card title and the `aria-label`s when a reel changes.
+`reel-1.mp4` plays in the watch section, `reel-2.mp4` and `reel-3.mp4` in the proof dialog. Keep each 720x1280 (9:16) with an AAC audio track; the `width`/`height` on the watch and dialog `<video>` must stay 720/1280. When a video changes, update its length in the watch `aria-label`s or the ticket's `data-label`, and its poster (the ticket thumbnail uses it too).
 
 ```sh
 ffmpeg -i <src> -vf scale=720:1280:flags=lanczos -c:v libx264 -preset slow -crf 28 -profile:v high -pix_fmt yuv420p -c:a aac -b:a 96k -ac 2 -movflags +faststart assets/video/reels/reel-N.mp4
@@ -93,7 +97,7 @@ ffmpeg -ss <t> -i <src> -frames:v 1 -vf scale=360:640 -c:v libwebp -quality 78 a
 
 ## Before launch
 
-- Replace the sample numbers (fan tags, proof claim and cards) with real ones or remove them.
+- Replace the sample numbers (fan tags, proof claim and tickets, the report card) with real ones or remove them.
 - Set `data-checkout` to the real checkout URL and `data-deadline` to a real deadline. Do not extend the deadline to keep urgency alive.
 
 ## Modern Web Guidance used
@@ -109,7 +113,7 @@ Looked up with `npx -y modern-web-guidance@latest search` and `retrieve`.
 | `accessibility` | Toggle cards are `<button aria-pressed>`; the countdown sits in no live region, one polite hourly message in a single `aria-live` region; decorative fan phones, tags and the hero video are `aria-hidden` (the pause chip and the one `figcaption` of the centre phone are not, so `.fan` itself is not hidden); visible focus. |
 | `performance` (web fonts) | One Google Fonts `<link>` with `preconnect` (+ `crossorigin` for gstatic) and `display=swap`; only the weights used. Self-hosted preload of the fonts was not done (no external files in the repo). |
 | `visually-stable-font-fallbacks` | `font-size-adjust: from-font` on `body`, with metric-close fallback stacks (Impact for Anton, system UI for Inter, ui-monospace for JetBrains Mono). |
-| `lazy-load-video-and-audio` | Hero video: `preload="none"`, explicit `width`/`height` (no layout shift), poster, no `autoplay`; playback starts from an `IntersectionObserver` in `site.js`. `loading="lazy"` was not added (Chrome/Edge only, and the video is near the fold). |
+| `lazy-load-video-and-audio` | Watch and dialog videos: `preload="none"`, nothing requested before a click. Hero video: `preload="none"`, explicit `width`/`height` (no layout shift), poster, no `autoplay`; playback starts from an `IntersectionObserver` in `site.js`. `loading="lazy"` was not added (Chrome/Edge only, and the video is near the fold). |
 | `efficient-background-processing` | Read for pausing off-screen work. Not used as written (`content-visibility` event); the video pauses when it leaves the viewport via `IntersectionObserver`, which the guide names for logic tied to visibility. |
 
 The `countdown timer live region` search returned `accessibility` (live regions) and `calculate-event-differentials` (Temporal); Temporal is not Widely available, so the countdown uses plain `Date` arithmetic.

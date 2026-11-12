@@ -14,13 +14,17 @@ import { extname, join, normalize, resolve } from 'node:path';
 import { homedir } from 'node:os';
 
 // Blocks (the data-p names) the text-zoom check covers. Each layout task adds its own blocks here.
-const ZOOM_BLOCKS = ['header', 'hero', 'ticker', 'watch', 'proof', 'night', 'how', 'styles', 'check', 'inside', 'price'];
+const ZOOM_BLOCKS = ['header', 'hero', 'ticker', 'watch', 'proof', 'night', 'how', 'styles', 'check', 'inside', 'price', 'faq', 'final', 'footer'];
 // Text that hangs outside its data-p box on purpose (the phone labels sit above and beside the phone): checked against its block instead.
 const ZOOM_HANG = ['.hero .ph .tag'];
 // Cropped by design: the phone mock-ups (aria-hidden, they run off the page edge at big text sizes, the centre one is the video's
 // frame) and the typewriter line of the prompt bar (aria-hidden; its full text is the sr-only line next to it, and it is clipped
 // at the bar's edge while it types; making it wrap would change the hero's prompt height, which T3's parity rows pin).
 const ZOOM_SKIP = ['.hero .ph[aria-hidden="true"]', '.hero .ph .bar', '.hero .prompt-text'];
+// Boxes the edge check leaves out, each with its reason: the ticker is a band 110% of the page wide on purpose (the parity row pins its
+// box; `main` clips it, and its text runs in a moving track); the hero's phone mock-ups (see ZOOM_SKIP) and its presenter image, which
+// the reference's own boxes put partly past the page edge at 950, 768 and 390 px (parity rows pin them).
+const ZOOM_EDGE_SKIP = ['[data-p="ticker"]', '.hero .ph', '.hero .mascot-wave'];
 const ZOOMS = (process.env.ZOOMS || '24,32').split(',').map(Number); // ZOOMS=16 looks at the default size
 const ZOOM_ONLY = process.argv.includes('--zoom-only');
 
@@ -204,6 +208,28 @@ for (const [vp, label] of [[{ width: 1440, height: 900 }, 'desktop'], [{ width: 
       ok(`${label} ticket ${n}: Escape closes, video paused and unloaded, focus back on the ticket`, !c.open && c.paused && !c.attr && await tState(pg2, n), c);
     }
   }
+  /* ---- a Ctrl-click and a Shift-click on a ticket follow the link (a new tab or window), no dialog; a plain click opens it ---- */
+  for (const key of ['Control', 'Shift']) {
+    await toCentre(pg2, TICKET(1));
+    await wait(250);
+    const box = await (await pg2.$(TICKET(1))).boundingBox();
+    const x = box.x + box.width / 2, y = box.y + box.height / 2;
+    const hit = await pg2.evaluate(([x, y]) => { const el = document.querySelector('.vt'), h = document.elementFromPoint(x, y); return !!h && el.contains(h); }, [x, y]);
+    ok(`${label} ticket 1: pointer hits it for the ${key}-click`, hit, { x: Math.round(x), y: Math.round(y) });
+    const opened = ctx2.waitForEvent('page', { timeout: 5000 }).catch(() => null);
+    await pg2.keyboard.down(key);
+    await pg2.mouse.click(x, y);
+    await pg2.keyboard.up(key);
+    const np = await opened;
+    await wait(300);
+    const dm = await dialogState(pg2);
+    ok(`${label} ticket 1 (${key}-click): no dialog opens, the link is followed`, !dm.open && !dm.attr && !!np && /reel-2\.mp4$/.test(np.url()), { open: dm.open, attr: dm.attr, followed: np ? np.url().split('/').pop() : null });
+    if (np) await np.close().catch(() => {});
+  }
+  await pointerClick(pg2, TICKET(1), `${label} ticket 1 plain click`);
+  const pl = await until(pg2, () => { const d = document.querySelector('#media-dialog'), v = d.querySelector('video'); return d.open && !v.paused && v.currentTime > 0.3 && /reel-2\.mp4$/.test(v.currentSrc); }, undefined, 8000);
+  ok(`${label} ticket 1 (plain click after the modified clicks): opens the dialog and plays reel-2.mp4`, !!pl, await dialogState(pg2));
+  await pg2.keyboard.press('Escape'); await wait(300);
   await pg2.screenshot({ path: join(ROOT, '.check', `media-${label}.png`) }).catch(() => {});
   await ctx2.close();
 
@@ -344,16 +370,18 @@ for (const width of ZOOM_ONLY ? [] : [1440, 950, 768, 390]) {
    (scrollWidth/Height <= client + 1), and the text's own range rect must lie inside the box of its nearest data-p
    ancestor (itself included) and inside every ancestor that clips, 1 px slack. Text inside ZOOM_SKIP parts (decoration) is skipped. Early-price pieces are shown (the widest the page gets) and motion is
    reduced so the ticker and the tilts hold still. One line per width x zoom x block. ---- */
-for (const width of [1440, 950, 768, 390]) {
+for (const width of [1440, 1100, 950, 768, 390]) {
   for (const px of ZOOMS) {
     const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     const pg = await newPage(ctx, []);
     await pg.goto(url, { waitUntil: 'networkidle' });
     await pg.evaluate(() => document.fonts.ready);
-    const res = await pg.evaluate(([px, blocks, hang, skip]) => {
+    const res = await pg.evaluate(([px, blocks, hang, skip, edgeSkip]) => {
       document.documentElement.style.fontSize = `${px}px`;
       document.querySelectorAll('[data-early]').forEach(e => { e.hidden = false; });
       void document.body.offsetHeight;
+      // The answer of a closed <details> is not shown (its layout can still report a box): leave it out until it is open.
+      const closedPanel = el => { const d = el.closest('details:not([open])'); return !!d && !el.closest('summary'); };
       const out = Object.fromEntries(blocks.map(b => [b, { elements: 0, bad: [] }]));
       const name = el => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''}`;
       for (const el of document.querySelectorAll('body *')) {
@@ -363,7 +391,7 @@ for (const width of [1440, 950, 768, 390]) {
         if (!out[block]) continue;
         const own = [...el.childNodes].filter(n => n.nodeType === 3 && n.nodeValue.trim());
         if (!own.length) continue;
-        if (el.closest(skip)) continue;
+        if (el.closest(skip) || closedPanel(el)) continue;
         const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
         if (el.offsetWidth <= 1 || el.offsetHeight <= 1 || eb.width <= 0 || cs.visibility === 'hidden') continue; // hidden, or a screen-reader-only clip
         const rec = out[block];
@@ -399,8 +427,26 @@ for (const width of [1440, 950, 768, 390]) {
           if (worst) { bad(`text spills out of ${worst.clip || name(host)} by ${['l', 't', 'r', 'b'].filter(k => worst[k] > 1).map(k => `${k}${Math.round(worst[k])}`).join(' ')}`); break; }
         }
       }
+      // No box may run past the page's left or right edge (1 px slack), unless a box that sits inside the page clips it
+      // (a frame with overflow other than visible and narrower than the page; a full-width band clips the page edge itself, which is the failure): that is a crop, not a spill. Boxes of ZOOM_SKIP parts are skipped.
+      const pageW = document.documentElement.clientWidth;
+      for (const el of document.querySelectorAll('body *')) {
+        const host = el.closest('[data-p]');
+        if (!host) continue;
+        const block = host.getAttribute('data-p').split('.')[0];
+        if (!out[block] || el.closest(skip) || el.closest(edgeSkip) || closedPanel(el)) continue;
+        const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
+        if (el.offsetWidth <= 1 || el.offsetHeight <= 1 || eb.width <= 0 || cs.visibility === 'hidden' || cs.display === 'contents') continue;
+        if (eb.left >= -1 && eb.right <= pageW + 1) continue;
+        let cropped = false;
+        for (let a = el.parentElement; a && a !== document.body && !cropped; a = a.parentElement) {
+          const ac = getComputedStyle(a), ab = a.getBoundingClientRect();
+          if (ac.overflowX !== 'visible' && ab.width < pageW - 2 && ab.left >= -1 && ab.right <= pageW + 1) cropped = true;
+        }
+        if (!cropped) out[block].bad.push(`${name(el)} runs past the page edge: ${Math.round(eb.left)}..${Math.round(eb.right)} of ${pageW}`);
+      }
       return out;
-    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(',')]);
+    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(','), ZOOM_EDGE_SKIP.join(',') || '[data-none]']);
     for (const b of ZOOM_BLOCKS) ok(`text zoom ${px}px root at ${width}: ${b} text is not clipped or spilling`, res[b].bad.length === 0 && res[b].elements > 0, { elements: res[b].elements, bad: res[b].bad.slice(0, 6) });
     await ctx.close();
   }
@@ -429,6 +475,7 @@ for (const width of [1440, 1100, 950, 768, 390]) {
         if (!host) continue;
         const block = host.getAttribute('data-p').split('.')[0];
         if (!out[block] || el.closest(skip) || el.matches(hang)) continue;
+        if (el.closest('details:not([open])') && !el.closest('summary')) continue; // a closed <details> answer is not shown
         const own = [...el.childNodes].filter(n => n.nodeType === 3 && n.nodeValue.trim());
         if (!own.length || !el.getClientRects().length) continue; // no text of its own, or display: none
         const cs = getComputedStyle(el), eb = el.getBoundingClientRect();

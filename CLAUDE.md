@@ -1,10 +1,11 @@
 # dc-landing: one-page static landing site for DC Agent Kit (donniechu / @donniechublog)
 
 ## What it does
-A static page (`index.html`, `site.css`, `site.js`, `assets/`) that sells the DC Agent Kit: price and countdown, checkout link, sample claims. It deploys to Vercel as static files. It must never show a fake deadline or a made-up number as fact. A bug here costs money (a wrong price or checkout link) or trust (a false claim), not data.
+A static page (`index.html`, `site.css`, `site.js`, the `assets` folder) that sells the DC Agent Kit: price and countdown, checkout link, sample claims. It deploys to Vercel as static files. It must never show a fake deadline or a made-up number as fact. A bug here costs money (a wrong price or checkout link) or trust (a false claim), not data.
 
 ## Verify
 - `npm install` once, then `node scripts/check.mjs` (exit 0): desktop, mobile (390px) and reduced-motion runs; fails on horizontal overflow, console errors, failed or external requests, missing alt/size/names, duplicate ids, broken anchors, more than one `<h1>`, infinite animations under reduced motion. Screenshots go to `.check/` (gitignored).
+- After every deploy (preview or production): `node scripts/deploy-check.mjs <deployment-url>` must exit 0 (it checks that the site files return 200 and the repo-only files 404; add `--header "Name: value"` for a Vercel protection-bypass header on protected previews). `.check/static-server.mjs [--all]` is its local test server.
 - Owner visual check against the reference and a screen-reader pass: "not run" unless the owner did it.
 
 ## HARD: the main session does it directly, then hard-reviewer
@@ -23,7 +24,7 @@ A static page (`index.html`, `site.css`, `site.js`, `assets/`) that sells the DC
 - No external scripts or trackers without the owner's approval (only Google Fonts is allowed). Every animation stops or becomes static under `prefers-reduced-motion: reduce`.
 - No fake urgency: the deadline in `data-deadline` must be a real one, and expired countdowns and "early price" wording must disappear (`site.js` does this).
 - Every number that is a claim stays an obvious sample until launch; the footer says so. Editable strings live in `CONTENT.md`.
-- Publish scope: only what `.vercelignore` re-includes is published (index.html, site.css, site.js, favicon.svg, assets/); adding a public file means adding it there. CLAUDE.md, CONTENT.md, README.md, scripts/, package files, `.claude/`, `.check/`, `HANDOFF.md` and `.env*` stay out.
+- Publish scope: only what `.vercelignore` re-includes is published (index.html, site.css, site.js, favicon.svg and the `assets` folder); adding a public file means adding it there. Re-includes in `.vercelignore` must name folders without a trailing slash (`!/assets`, not `!/assets/`): the Vercel CLI tests the bare folder path, so a trailing-slash rule never matches and the folder is skipped. CLAUDE.md, CONTENT.md, README.md, scripts/, package files, `.claude/`, `.check/`, `HANDOFF.md` and `.env*` stay out.
 - Static HTML shows the regular price; every early-price piece is `hidden` and marked `data-early`, and `site.js` reveals it only while a valid `data-price`, `data-price-later` and a future `data-deadline` all exist.
 - Deploy: Vercel via the `vercel` wrapper (0xdonniechu login). Check `.vercel/project.json` `orgId` first. Preview first; production only with the owner's approval; never one deploy per edit.
 - Git: identity `0xdonniechu` (the machine default), repo public on GitHub under 0xdonniechu (not yet created). No Ambysto rules here. Keep private paths and names out; the repo is public.

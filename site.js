@@ -168,6 +168,33 @@
     paintBtn();
   }
 
+  /* ---------- proof reels: click to play with sound, one at a time, pause when scrolled out ---------- */
+  // Without JS the native controls work. Here the controls are swapped for a "Play with sound"
+  // button until the first click. Playback is always user-initiated, so reduced motion needs no gate.
+  const reels = $$('.reel-video');
+  const stopOthers = v => reels.forEach(o => { if (o !== v && !o.paused) o.pause(); });
+  const reelIO = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => entries.forEach(e => { if (!e.isIntersecting && !e.target.paused) e.target.pause(); }), { threshold: 0 })
+    : null;
+  reels.forEach(v => {
+    const btn = $('.reel-play', v.parentElement);
+    if (!btn) return;
+    v.removeAttribute('controls');
+    btn.hidden = false;
+    btn.addEventListener('click', () => {
+      stopOthers(v);
+      v.controls = true;
+      btn.hidden = true;
+      v.focus();
+      let p;
+      try { p = v.play(); } catch { p = Promise.reject(); }
+      if (p) p.catch(() => { v.removeAttribute('controls'); btn.hidden = false; btn.focus(); });
+    });
+    v.addEventListener('play', () => { stopOthers(v); btn.hidden = true; });
+    v.addEventListener('ended', () => { btn.hidden = false; });
+    if (reelIO) reelIO.observe(v);
+  });
+
   /* ---------- steps tick when the terminal scrolls into view ---------- */
   const steps = $$('.step');
   const terminal = $('#terminal');

@@ -39,7 +39,8 @@ Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and ke
 | Proof (#proof, #myth-1) | Struck quote | "AGENTS NEVER FINISH THE JOB." | `#myth-1 .strike` |
 | Proof | Claim (sample number) | MINE SHIPPED 1,234+ CHECKED TASKS IN A WEEK. | `h2#proof-title` |
 | Proof | Subcopy | Every one came out of this folder from a single prompt... | `#proof .lead` |
-| Proof | 3 cards (sample numbers) | 612 A landing page, start to ship (build style); 415 A repo review with fixes (review style); 207 Notes into a weekly report (write style) | `.proof-cards` |
+| Proof | 3 cards (sample numbers) | 612 / 415 / 207 TASKS DONE with the tags build / review / write style; card title names the video: SuperAgent.Social promo 1, 63 s / promo 2, 62 s / promo 3, 52 s (all three end on the free aipub.social tool), each "in Vietnamese" | `.proof-cards .big-num`, `.card-t`, `.card-tag` |
+| Proof | 3 reels (click to play, with sound) | Vietnamese promo videos, 720x1280 H.264+AAC, voice-over and burned-in Vietnamese subtitles. Files `assets/video/reels/reel-1.mp4` (63 s), `reel-2.mp4` (62 s), `reel-3.mp4` (52 s) and `reel-N-poster.webp` (360x640). Per reel: `aria-label` on the `<video>` and on `.reel-play` (name, length, "Vietnamese voice-over and burned-in subtitles"); button text "Play with sound". Play only on click, one at a time, pause when scrolled out of view; without JS the native controls work. Re-encode below. | `.proof-card .reel-video`, `.reel-play`; `site.js` "proof reels" |
 | Proof | Footnote + handle | Sample numbers until launch. Follow the real ones on @donniechublog (https://x.com/donniechublog) | `.footnote` |
 | How (#how, #myth-2) | Struck quote | "IT'S HARD TO SET UP." | `#myth-2 .strike` |
 | How | H2 / subcopy | YOU TYPE ONE LINE. / A plan, the build, a self-review and the hand-over... | `h2#how-title`, `#how .lead` |
@@ -80,6 +81,15 @@ ffmpeg -i renders/promo-master.mp4 -vf scale=540:960 -frames:v 1 -c:v libwebp -q
 ```
 
 Keep the video 540x960 (9:16) with no audio track, and the last frame matching frame 0 so the loop is seamless. The `width`/`height` on `<video>` must stay 540/960.
+
+## Re-encoding the proof reels
+
+Keep each reel 720x1280 (9:16) with an AAC audio track; the `width`/`height` on `<video>` must stay 720/1280. Update the length in the card title and the `aria-label`s when a reel changes.
+
+```sh
+ffmpeg -i <src> -vf scale=720:1280:flags=lanczos -c:v libx264 -preset slow -crf 28 -profile:v high -pix_fmt yuv420p -c:a aac -b:a 96k -ac 2 -movflags +faststart assets/video/reels/reel-N.mp4
+ffmpeg -ss <t> -i <src> -frames:v 1 -vf scale=360:640 -c:v libwebp -quality 78 assets/video/reels/reel-N-poster.webp
+```
 
 ## Before launch
 

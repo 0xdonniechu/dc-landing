@@ -510,45 +510,69 @@ html.js .ring:not(.is-in) .ring-fg { stroke-dashoffset: 314.16; }
 .mascot-skeptic { right: 0; bottom: -5.5625rem; width: 11.875rem; height: 14.6875rem; object-fit: contain; object-position: center bottom; }
 @media (max-width: 900px) { .report-wrap { padding-bottom: 0; } .mascot-skeptic { display: none; } }
 
-/* Kit */
-.kit-list { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, auto); grid-auto-flow: column; column-gap: clamp(32px, 7vw, 86px); margin-top: 40px; }
-.kit-item { display: flex; gap: 18px; padding: 20px 0 18px; border-bottom: 2.5px solid var(--ink); }
-.kit-item:nth-child(1), .kit-item:nth-child(5) { padding-top: 6px; }
-.kit-n { font: 400 clamp(2.2rem, 3.4vw, 3rem)/1 var(--font-display); color: var(--blue); flex: none; min-width: 1.5em; }
+/* Kit ("inside"). Geometry from scripts/parity-ref.json: the h2, then eight items in two balanced columns (a column gap of
+   5vw; one column from 900 px down). Each item is a 2.875rem number and a text column, 1rem above and below, a 2px rule
+   under it. Sizes in rem so a bigger text size grows the boxes (16 px root = the reference's px). */
+.inside-band { padding-block: clamp(3.25rem, 6.5vw, 5.5rem); }
+.kit-list { columns: 2; column-gap: 5vw; margin-top: 1.125rem; }
+@media (max-width: 900px) { .kit-list { columns: 1; } }
+ol.kit-list > .kit-item { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 2px solid var(--ink); break-inside: avoid; }
+.kit-n { font: 400 2.5rem/1 var(--font-display); color: var(--blue); flex: none; width: 2.875rem; }
 .kit-item > div { flex: 1; min-width: 0; }
-.kit-t { display: flex; align-items: center; gap: 12px; font: 400 clamp(1.3rem, 1.8vw, 1.65rem)/1.1 var(--font-display); text-transform: uppercase; }
+.kit-t { display: flex; align-items: center; gap: .625rem; font: 400 clamp(1.375rem, calc(1.375rem + (100vw - 59.375rem) * .014), 1.6875rem)/1.1 var(--font-display); text-transform: uppercase; }
 .kit-t::after { content: ""; flex: 1; border-bottom: 3px dotted rgba(20, 20, 20, .35); translate: 0 4px; }
-.kit-item p:last-child { color: var(--ink-2); font-size: .98rem; margin-top: 8px; line-height: 1.5; }
+.kit-item p:last-child { color: var(--ink-2); font-size: .96875rem; margin-top: .25rem; line-height: 1.5; }
 
-/* Price */
-.price-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(32px, 7vw, 96px); align-items: center; }
-.receipt-col { position: relative; max-width: 360px; width: 100%; justify-self: center; }
-.receipt-wrap { rotate: -2deg; filter: drop-shadow(7px 5px 0 var(--ink)); }
+/* Price. Geometry from scripts/parity-ref.json: the receipt (19.1rem wide, turned 1.2deg, 318x608 as a box) at the left and
+   the buy side (h2, lead, button, small line, three requirement pills) at its right, centred on each other; one column,
+   centred, from 900 px down. Sizes in rem so a bigger text size grows the boxes. The pills are as wide as their text up
+   to 1100 px (they fit one row at 1440), and at least 14.5rem wide from there down, where they wrap. */
+.price-band { padding-block: clamp(3.25rem, 6.5vw, 5.5rem); }
+.price-grid { display: grid; grid-template-columns: 19.1rem minmax(0, 1fr); column-gap: min(6vw, 5.25rem); row-gap: 6vw; align-items: center; }
+.receipt-col { position: relative; width: 100%; min-width: 0; justify-self: center; }
+.receipt-wrap { rotate: -1.2deg; filter: drop-shadow(7px 5px 0 var(--ink)); }
 .receipt {
   --z: 8px;
-  background: #fff; padding: 30px 22px 34px; font-size: .82rem; line-height: 1.45;
+  background: #fff; padding: 1.875rem 1.625rem 1.625rem; font-size: .90625rem; line-height: 1.55;
   -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--z)) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--z) * 2) var(--z) repeat-x;
           mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--z)) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--z) * 2) var(--z) repeat-x;
-  padding-bottom: calc(34px + var(--z));
+  padding-bottom: 1.625rem;
 }
 .r-title { font: 400 1.9rem/1 var(--font-display); text-align: center; }
-.r-sub { text-align: center; font-size: .72rem; color: var(--ink-2); margin-top: 6px; }
-.dash { border: 0; border-top: 2px dashed rgba(20, 20, 20, .45); margin: 14px 0; }
+.r-sub { text-align: center; font-size: .72rem; color: var(--ink-2); margin-top: .25rem; }
+.dash { border: 0; border-top: 2px dashed rgba(20, 20, 20, .45); margin: .625rem 0; }
 .r-list li, .r-save, .r-later, .r-pay { display: flex; justify-content: space-between; gap: 12px; }
-.r-list li { padding: 2px 0; }
+.r-list li { padding: 1.5px 0; }
 .r-price { display: flex; justify-content: space-between; align-items: flex-end; }
 .r-label { font: 400 1.5rem/1 var(--font-display); }
 .r-amt { font: 400 2.6rem/1 var(--font-display); color: var(--blue); }
-.r-ends { display: inline-block; background: var(--yellow); padding: 3px 8px; font-size: .74rem; font-weight: 700; margin-top: 8px; }
-.r-save { margin-top: 12px; color: var(--blue); font-weight: 700; }
+.r-ends { display: inline-block; background: var(--yellow); padding: 3px 8px; font-size: .74rem; font-weight: 700; margin-top: .375rem; }
+.r-save { margin-top: .5rem; color: var(--blue); font-weight: 700; }
 .r-later { color: var(--ink-2); }
 .r-pay { font-size: .76rem; }
-.barcode { height: 46px; margin-top: 16px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 17px, var(--ink) 17px 19px, transparent 19px 20px); }
-.r-thanks { text-align: center; font-size: .72rem; color: var(--ink-2); margin-top: 10px; }
-.mascot-money { right: -100px; bottom: -56px; width: clamp(120px, 14vw, 170px); rotate: 6deg; }
-.price-copy .btn { margin-top: 28px; }
-.req { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-.req li { display: inline-flex; align-items: center; gap: 8px; border: 2px solid var(--ink); border-radius: 10px; padding: 9px 14px; font-weight: 500; font-size: .95rem; background: rgba(255, 253, 248, .6); }
+.barcode { height: 2.5rem; margin-top: .75rem; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 17px, var(--ink) 17px 19px, transparent 19px 20px); }
+.r-thanks { text-align: center; font-size: .72rem; color: var(--ink-2); margin-top: .5rem; }
+.mascot-money { right: -3.5rem; bottom: -3.5rem; width: 8.5rem; rotate: 6deg; }
+.price-copy { min-width: 0; }
+.price-copy .h2 { margin-bottom: 1rem; line-height: 1.06; }
+.inside-band .h2 { line-height: 1.06; }
+.price-copy .lead { margin: 0 0 1.5rem; line-height: 1.6; }
+.price-copy .btn { box-sizing: border-box; width: min(13.875rem, 100%); min-height: 3.9375rem; padding: .25rem .5rem; justify-content: center; font-size: 1.375rem; white-space: normal; text-align: center; }
+.price-copy .fine { margin-top: .875rem; font-size: .84375rem; line-height: 1.4; text-align: inherit; }
+.req { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
+.req li { display: inline-flex; align-items: center; gap: .5rem; border: 2px solid var(--ink); border-radius: .625rem; padding: 0 .625rem; min-height: 2.5rem; font-weight: 500; font-size: .875rem; background: rgba(255, 253, 248, .6); }
+@media (max-width: 1100px) {
+  .price-copy .lead { font-size: 1.03rem; }
+  .req li { min-width: min(14.5rem, 100%); justify-content: center; }
+}
+@media (max-width: 900px) {
+  .br-d { display: none; }
+  .receipt-col { width: min(23.75rem, 100%); }
+  .price-copy { text-align: center; }
+  .price-copy .lead { margin-inline: auto; }
+  .req { justify-content: center; }
+}
+@media (max-width: 700px) { .price-grid { row-gap: 3.75rem; } }
 
 /* FAQ */
 .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 clamp(28px, 6vw, 80px); margin-top: 34px; align-items: start; }
@@ -642,7 +666,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .three-steps { margin-top: 1.9375rem; }
   .mascot-nerd { right: 10%; }
   .nav { display: none; }
-  .mascot-money { right: -20px; }
+  .mascot-money { right: -20px; bottom: -2.5rem; }
   .think-in { min-height: 0; justify-content: flex-start; }
   .think-copy { width: 100%; }
   .idx { margin-bottom: 0; }
@@ -666,7 +690,6 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .term-body { font-size: .8125rem; }
   .step-m { display: none; }
   .arrow-li { display: none; }
-  .kit-list { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
   .kit-item:nth-child(5) { padding-top: 20px; }
   .faq-grid { grid-template-columns: 1fr; }
   .faq-col:first-child details:last-child { border-bottom: 0; }
@@ -690,7 +713,6 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .float-badge svg { width: 84px; height: 84px; }
   .fb-price { font-size: 1.15rem; }
   .mascot-cool { right: -6px; }
-  .receipt-col { margin-bottom: 40px; }
   .mascot-money { right: -6px; bottom: -44px; width: 100px; }
   .header-in { min-height: 93px; }
   .brand { min-width: 157px; min-height: 39px; }

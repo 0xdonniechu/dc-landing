@@ -153,3 +153,13 @@ T8 also takes the T4 review's MINORs: the watch CTA's `min-width` makes it 444 p
 8. The owner looks at the side-by-side screenshots in `.check/parity/` for every width.
 
 ## Result
+
+1. (filled after the final merge)
+2. (filled after the final merge)
+3. (filled after the final merge)
+4. PASS, `node scripts/deploy-check.mjs` against `.check/static-server.mjs` serving the T9 tree (layout-parity at cd5955a plus the docs): 31/31 ok, 0 problems.
+5. (filled after the preview deploy)
+6. PASS, on two scratch copies of the same tree: with the shared `@media (max-width: 900px)` block changed to 960px the gate exits 1 with 83 failing rows (the breakpoint row at every width, page height +1826 px at 950, block tops and heights); with `.terminal { width: 110% }` it exits 1 with 5 failing rows, `how.terminal.w` at every width (+35 to +70 px). Unchanged, the same tree exits 0 (Proof 1).
+7. (filled after the final merge)
+8. not run: the owner looks at the pairs in `.check/parity/`.
+

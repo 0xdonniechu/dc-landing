@@ -256,7 +256,7 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 main { overflow-x: clip; }
 .ticker {
   position: relative; z-index: 5; margin: -17px -5%; rotate: -1.5deg;
-  display: flex; align-items: center; height: 44px;
+  display: flex; align-items: center; min-height: 44px;
   background: var(--yellow); color: var(--ink);
   border-block: 3px solid var(--ink); box-shadow: 0 5px 0 var(--ink);
   overflow: clip;
@@ -274,7 +274,9 @@ main { overflow-x: clip; }
 @media (prefers-reduced-motion: reduce) {
   .ticker-group[aria-hidden="true"] { display: none; }
   .ticker-track { width: 100%; justify-content: center; }
-  .ticker-group { justify-content: center; padding-inline: 16px; }
+  /* 90% of the 110%-wide ticker is the page width, so wrapped text never runs under the page edge. */
+  .ticker-group { flex: 0 1 auto; min-width: 0; max-width: 90%; box-sizing: border-box; flex-wrap: wrap; justify-content: center; row-gap: .25rem; padding-inline: 16px; padding-block: .125rem; }
+  .t-i { white-space: normal; text-align: center; }
   .ticker-ctl { display: none; }
 }
 .ticker-ctl { position: absolute; z-index: 1; right: calc(5% + 14px); top: 50%; translate: 0 -50%; background: var(--paper); border: 2px solid var(--ink); border-radius: 999px; padding: 4px 12px; font-size: .75rem; font-weight: 700; line-height: 1.2; cursor: pointer; }
@@ -316,11 +318,13 @@ main { overflow-x: clip; }
   background-color: var(--blue); background-image: radial-gradient(rgba(255, 255, 255, .16) 1.2px, transparent 1.4px); background-size: 22px 22px;
   border: var(--bw) solid var(--ink); border-radius: 18px; box-shadow: var(--shadow);
 }
-.watch-video { display: block; height: 100%; width: auto; max-width: 100%; aspect-ratio: 9 / 16; background: var(--ink); }
+/* Taken out of the frame's flow and sized from the frame's height: a percentage height in a grid item had no definite
+   frame height to resolve against, so the video grew to its own 1280 px. The native controls live inside this box. */
+.watch-video { position: absolute; inset: 0; margin: auto; display: block; height: 100%; width: auto; max-width: 100%; aspect-ratio: 9 / 16; background: var(--ink); }
 .watch-video:focus-visible { outline: 3px solid var(--yellow); outline-offset: -3px; }
 .vplay {
-  position: absolute; z-index: 2; left: 50%; bottom: 24px; translate: -50% 0; width: 320px; height: 66px;
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; white-space: nowrap;
+  position: absolute; z-index: 2; left: 50%; bottom: 1.5rem; translate: -50% 0; box-sizing: border-box; width: 20rem; min-height: 4.125rem; max-width: calc(100% - 1rem); padding: .5rem 1rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: .625rem; cursor: pointer; text-align: center;
   background: var(--yellow); color: var(--ink); border: 3px solid var(--ink); border-radius: 14px; box-shadow: var(--shadow-sm);
   font: 700 1.1rem/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
 }
@@ -328,12 +332,13 @@ main { overflow-x: clip; }
 .vplay:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
 .vplay[hidden] { display: none; }
 .watch .cta-row { margin-top: 30px; }
-.watch .btn-lg { width: 222px; height: 63px; padding: 0; justify-content: center; font-size: 1.55rem; }
+.watch .btn-lg { box-sizing: border-box; min-width: 13.875rem; min-height: 3.9375rem; padding: .25rem .5rem; justify-content: center; text-align: center; white-space: normal; font-size: 1.55rem; }
 
 /* Proof tickets: three horizontal cards, 199 px tall; the outer two tilt 1.5deg and their thumbnails stay level. */
-.tickets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: min(28px, 2.4vw); margin-top: clamp(26px, calc(26px + (100vw - 768px) * .0208), 40px); }
+.tickets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); gap: min(28px, 2.4vw); margin-top: clamp(26px, calc(26px + (100vw - 768px) * .0208), 40px); }
+.tickets > li { display: grid; }
 .vt {
-  display: grid; grid-template-columns: 100px minmax(0, 1fr); column-gap: 12px; align-items: start; height: 199px;
+  display: grid; grid-template-columns: 100px minmax(0, 1fr); column-gap: 12px; align-items: stretch; min-height: 12.4375rem;
   padding: 13px 12px 10px 9px; background: var(--cream); color: var(--ink); text-decoration: none;
   border: var(--bw) solid var(--cream); border-radius: 12px; box-shadow: 6px 6px 0 #000; cursor: pointer;
 }
@@ -343,10 +348,10 @@ main { overflow-x: clip; }
 .tickets li:nth-child(3) .vt-thumb { rotate: -1.5deg; }
 .vt:hover { box-shadow: 8px 8px 0 #000; }
 .vt:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
-.vt-thumb { position: relative; display: block; width: 100px; height: 173px; }
+.vt-thumb { position: relative; display: block; align-self: start; width: 100px; height: 173px; }
 .vt-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; border: 2.5px solid var(--ink); border-radius: 10px; background: var(--ink); }
 .vt-play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 38px; height: 38px; display: grid; place-items: center; padding-left: 3px; font-style: normal; font-size: .85rem; background: var(--yellow); color: var(--ink); border: 2.5px solid var(--ink); border-radius: 50%; }
-.vt-body { display: flex; flex-direction: column; min-width: 0; height: 100%; padding-top: 2px; overflow-wrap: anywhere; }
+.vt-body { display: flex; flex-direction: column; min-width: 0; padding-top: 2px; overflow-wrap: anywhere; }
 .vt-go { margin-top: auto; align-self: flex-start; font-size: .72rem; font-weight: 700; letter-spacing: .1em; background: var(--ink); color: var(--cream); border-radius: 6px; padding: 5px 9px; }
 .big-num { font: 400 clamp(2.4rem, 3.6vw, 3.2rem)/1 var(--font-display); }
 .num-label { font-size: .72rem; font-weight: 700; letter-spacing: .12em; color: var(--blue); margin-top: 4px; }
@@ -582,14 +587,14 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .mascot-wave { left: calc(50% + 18.75rem); width: 12.5rem; }
   #proof .lead { font-size: 1.03rem; }
   .vframe { margin-top: clamp(28px, calc(28px + (100vw - 950px) * .033), 33px); }
-  .vplay { width: clamp(266px, calc(266px + (100vw - 950px) * .22), 299px); height: clamp(56px, calc(56px + (100vw - 950px) * .0267), 60px); font-size: 1rem; }
+  .vplay { width: clamp(16.625rem, calc(16.625rem + (100vw - 950px) * .22), 18.6875rem); min-height: clamp(3.5rem, calc(3.5rem + (100vw - 950px) * .0267), 3.75rem); font-size: 1rem; }
 }
 @media (max-width: 900px) {
   .how-grid, .styles-grid, .check-grid, .price-grid { grid-template-columns: 1fr; }
   .vframe { margin-top: 26px; }
   .watch { padding-top: calc(var(--pad-y) + 20px); }
   .tickets { margin-right: -10px; }
-  .vplay { width: clamp(199px, calc(199px + (100vw - 390px) * .1429), 266px); height: clamp(40px, calc(40px + (100vw - 390px) * .0423), 56px); bottom: 18px; font-size: .9rem; }
+  .vplay { width: clamp(12.4375rem, calc(12.4375rem + (100vw - 390px) * .1429), 16.625rem); min-height: clamp(2.5rem, calc(2.5rem + (100vw - 390px) * .0423), 3.5rem); bottom: 1.125rem; font-size: .9rem; }
   .phone-tall { margin-top: 24px; }
   .mascot-nerd { right: 10%; }
   .nav { display: none; }
@@ -602,7 +607,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
 }
 @media (max-width: 700px) {
   .vframe { margin-top: 22px; }
-  .vplay { bottom: 10px; font-size: .8rem; letter-spacing: .04em; }
+  .vplay { bottom: .625rem; font-size: .8rem; letter-spacing: .04em; }
   .tickets { grid-template-columns: 1fr; gap: 13px; margin-right: 0; }
   .vt, .tickets li .vt-thumb { rotate: none !important; }
   .watch .cta-row .btn { width: 222px; }
@@ -647,7 +652,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .wordmark { font-size: 1.75rem; }
   .btn-sm { font-size: .95rem; padding: 9px 12px; }
   .header-in .btn { min-width: 122px; min-height: 57px; }
-  .ticker { height: 42px; margin-block: -18px; }
+  .ticker { min-height: 42px; margin-block: -18px; }
   .style-cards { flex-wrap: nowrap; gap: 8px; }
   .style-card { flex: 1 1 0; min-width: 0; width: auto; padding: 6px 6px 8px; }
   .sc-thumb { height: 70px; padding: 8px; }

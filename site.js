@@ -233,7 +233,11 @@
     tickets.forEach(t => {
       t.setAttribute('role', 'button');
       t.setAttribute('aria-haspopup', 'dialog');
-      t.addEventListener('click', e => { e.preventDefault(); open(t); });
+      // Only a plain primary click opens the dialog; Ctrl/Cmd/Shift/Alt clicks follow the link as the browser does.
+      t.addEventListener('click', e => {
+        if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault(); open(t);
+      });
       t.addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); t.click(); } });
     });
     closeBtn.addEventListener('click', () => dlg.close());

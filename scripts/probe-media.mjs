@@ -14,7 +14,7 @@ import { extname, join, normalize, resolve } from 'node:path';
 import { homedir } from 'node:os';
 
 // Blocks (the data-p names) the text-zoom check covers. Each layout task adds its own blocks here.
-const ZOOM_BLOCKS = ['header', 'hero', 'ticker', 'watch', 'proof', 'night', 'how', 'styles', 'check'];
+const ZOOM_BLOCKS = ['header', 'hero', 'ticker', 'watch', 'proof', 'night', 'how', 'styles', 'check', 'inside', 'price'];
 // Text that hangs outside its data-p box on purpose (the phone labels sit above and beside the phone): checked against its block instead.
 const ZOOM_HANG = ['.hero .ph .tag'];
 // Cropped by design: the phone mock-ups (aria-hidden, they run off the page edge at big text sizes, the centre one is the video's

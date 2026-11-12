@@ -4,3 +4,7 @@ node_modules/
 .env*
 HANDOFF.md
 .DS_Store
+video/renders/
+video/.hyperframes/
+video/node_modules/
+video/.thumbnails/

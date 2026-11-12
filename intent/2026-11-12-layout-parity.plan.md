@@ -10,7 +10,9 @@ Intent: `intent/2026-11-12-layout-parity.md` (approved). Branch: `layout-parity`
 - **Component map.** `scripts/parity-map.json` pairs each block and component: `{ "block": "hero", "name": "fan centre phone", "ref": ".hero .ph.f0 .phone", "ours": "#top .phone-c" }`. Blocks are header, hero, ticker, watch, night, proof, how, styles, check, inside, price, faq, final, footer and badge.
 - **Two kinds of position.** A component's position is measured relative to its block's top-left corner, so a block can be checked on its own (`--only hero,watch`). The full run also checks every block's absolute top and the page height.
 - **Tolerances** (from the intent):
-  - Block top and height, and page height: ±3% or ±24 px, whichever is larger.
+  - Block height: ±3% or ±24 px, whichever is larger. Block top and page height: ±1% or ±24 px (owner decision 2026-11-12).
+  - Block x and width: ±12 px and ±4%. Thin blocks that are themselves components (header, ticker: `tight` in the map) take ±4% on height too.
+  - Every `data-p` is a mapped name used once, and no top-level box is left unmapped.
   - Component position: ±12 px. Component width and height: ±4%.
   - Heading font size: ±2%.
   - Breakpoints: the same `max-width` values as the reference.

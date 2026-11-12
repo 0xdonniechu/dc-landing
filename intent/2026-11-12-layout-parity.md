@@ -19,10 +19,10 @@ The page has the reference's structure and geometry, with our brand, copy, masco
 
 Success criteria, all measured by one script (`scripts/parity.mjs`) that loads the reference and our page in the same local Chromium at the widths 1440, 1100, 950, 768 and 390 px:
 1. **Sections:** the same list of top-level blocks in the same order at every width. There are 13: header, hero, watch, myth/night, proof, how, styles, self-check, inside, price, FAQ, final, footer.
-2. **Section heights:** the top and height of every section are within ±3% of the reference (or ±24 px, whichever is larger) at every width.
+2. **Section heights:** the height of every section is within ±3% of the reference (or ±24 px, whichever is larger), and its top within ±1% (or ±24 px), at every width. The ±1% on tops is an owner decision of 2026-11-12, tightened from ±3%.
 3. **Components:** a named map pairs each of our components with the reference's. It covers headings, prompt bar, CTA, phones, mascot, ticker, terminal, step list, cards, video frame, price box, FAQ items and badge. Each paired box is within ±12 px in position and ±4% in width and height at every width. The heading font size is within ±2%.
 4. **Breakpoints:** our layout changes at the same widths as the reference (1100, 900, 700 px).
-5. **Page height:** within ±3% of the reference at every width.
+5. **Page height:** within ±1% of the reference at every width (owner decision 2026-11-12, tightened from ±3%).
 6. **Existing gates:** `node scripts/check.mjs` (overflow, accessibility, reduced motion, no external requests), the video probes and `deploy-check` still pass.
 7. **Report:** the script writes a side-by-side screenshot pair and a table of differences for every width. The owner looks at the pairs before the merge.
 
@@ -49,7 +49,7 @@ Success criteria, all measured by one script (`scripts/parity.mjs`) that loads t
 - Fixing the reference's own behaviour or mirroring its third-party scripts.
 
 ## Decisions taken by default (the owner's approval of this intent accepts them)
-- Tolerances as in criteria 2, 3 and 5 (±3% sections and page, ±12 px / ±4% components, ±2% heading size).
+- Tolerances as in criteria 2, 3 and 5 (±3% section heights, ±1% section tops and page height, ±12 px / ±4% components, ±2% heading size).
 - Video 1 is vertical, but the reference's 60-second frame is landscape. The frame keeps the reference's size, and the vertical video plays centred in it on a brand-coloured background.
 - The proof card 3 thumbnail uses the hero loop, as there are only three owner videos and video 1 is in the 60-second section.
 - No tracker ticket: this repo belongs to 0xdonniechu, and the Plane tracker is Ambysto's.

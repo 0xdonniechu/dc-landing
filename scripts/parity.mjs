@@ -25,7 +25,8 @@ const MAP = JSON.parse(readFileSync(join(ROOT, 'scripts', 'parity-map.json'), 'u
 const REF_URL = 'https://www.itsflxkzy.com/';
 const ALL_WIDTHS = [1440, 1100, 950, 768, 390];
 const HEIGHT = 900;
-const TOL = { blockPct: 0.03, blockPx: 24, posPx: 12, sizePct: 0.04, sizePx: 2, fontPct: 0.02 };
+// topPct: block tops and page height, ±1% (owner decision 2026-11-12, tightened from the intent's ±3%).
+const TOL = { blockPct: 0.03, blockPx: 24, topPct: 0.01, posPx: 12, sizePct: 0.04, sizePx: 2, fontPct: 0.02 };
 
 const args = process.argv.slice(2);
 const flag = n => args.includes(n);
@@ -101,11 +102,22 @@ async function measure(page, side) {
     // A family counts as present only when one of its FontFaces actually loaded: offline, the web-font stylesheet
     // fails, no FontFace exists, and document.fonts.check() would wrongly say yes.
     const loaded = new Set([...document.fonts].filter(f => f.status === 'loaded').map(f => f.family.replace(/^["']|["']$/g, '')));
-    const fontsMissing = [...new Set([document.body, document.querySelector('h1'), document.querySelector('h2')].filter(Boolean).map(fam))]
-      .filter(f => f && !generic.test(f) && !loaded.has(f));
+    // Every family the page actually uses (first family of each rendered element), not only body and headings.
+    const used = new Set();
+    for (const el of document.body.querySelectorAll('*')) { if (el.getClientRects().length && el.textContent.trim()) used.add(fam(el)); }
+    used.add(fam(document.body));
+    const fontsMissing = [...used].filter(f => f && !generic.test(f) && !loaded.has(f));
     // Unmapped blocks (ours only): a top-level box that is not a mapped block, not inside one and not a container of them.
     const unmapped = [];
     if (side === 'ours') {
+      // Every data-p must be a mapped name, and each used once: a typo or a duplicate block is an extra block.
+      const known = new Set([...map.blocks.map(b => b.name), ...map.components.map(c => `${c.block}.${c.name}`)]);
+      const seen = {};
+      for (const e of document.querySelectorAll('[data-p]')) { const n = e.getAttribute('data-p'); seen[n] = (seen[n] || 0) + 1; }
+      for (const [n, k] of Object.entries(seen)) {
+        if (!known.has(n)) unmapped.push(`data-p="${n}" (not in the map)`);
+        else if (k > 1) unmapped.push(`data-p="${n}" (used ${k} times)`);
+      }
       const cands = new Set([...document.querySelectorAll('body > *, main > *, section, header, footer')].filter(e => !e.parentElement.closest('section')));
       for (const e of cands) {
         if (e.hasAttribute('data-p') || e.closest('[data-p]') || e.querySelector('[data-p]:not([data-p*="."])')) continue;
@@ -131,7 +143,16 @@ async function measure(page, side) {
     }
     const bps = new Set();
     const walk = rules => { for (const r of rules) {
-      if (r.media) for (const m of r.media.mediaText.matchAll(/(max|min)-width:\s*([\d.]+)px/g)) bps.add(`${m[1]}-width:${m[2]}`);
+      if (r.media) {
+        const t = r.media.mediaText; const px = (n, u) => +(u === 'px' ? n : n * 16).toFixed(2);
+        // (max-width: N) / (min-width: N), in px, em or rem
+        for (const m of t.matchAll(/(max|min)-width\s*:\s*([\d.]+)(px|em|rem)/g)) bps.add(`${m[1]}-width:${px(+m[2], m[3])}`);
+        // range syntax: (width <= N), (width < N), (N <= width) …; strict forms stay distinct strings
+        for (const m of t.matchAll(/width\s*(<=|<|>=|>)\s*([\d.]+)(px|em|rem)/g))
+          bps.add({ '<=': 'max-width:', '>=': 'min-width:', '<': 'max-width:<', '>': 'min-width:>' }[m[1]] + px(+m[2], m[3]));
+        for (const m of t.matchAll(/([\d.]+)(px|em|rem)\s*(<=|<|>=|>)\s*width/g))
+          bps.add({ '<=': 'min-width:', '>=': 'max-width:', '<': 'min-width:>', '>': 'max-width:<' }[m[3]] + px(+m[1], m[2]));
+      }
       if (r.cssRules) walk(r.cssRules);
     } };
     for (const ss of document.styleSheets) { try { walk(ss.cssRules); } catch {} }
@@ -181,7 +202,7 @@ function compare(ref, ours, w) {
       .sort((a, b) => d.blocks[a.name].y - d.blocks[b.name].y).map(b => b.name).join(' > ');
     const ro = order(ref), oo = order(ours);
     row('order', 'blocks', ro, oo, ro === oo);
-    row('page', 'height', ref.docH, ours.docH, within(ours.docH, ref.docH, TOL.blockPct, TOL.blockPx));
+    row('page', 'height', ref.docH, ours.docH, within(ours.docH, ref.docH, TOL.topPct, TOL.blockPx));
   }
   for (const b of MAP.blocks) {
     if (!inScope(b.name)) continue;
@@ -197,7 +218,7 @@ function compare(ref, ours, w) {
     row('block', `${b.name}.h`, r.h, o.h, b.tight ? within(o.h, r.h, TOL.sizePct, TOL.sizePx) : within(o.h, r.h, TOL.blockPct, TOL.blockPx));
     row('block', `${b.name}.x`, r.x, o.x, within(o.x, r.x, 0, TOL.posPx));
     row('block', `${b.name}.w`, r.w, o.w, within(o.w, r.w, TOL.sizePct, TOL.sizePx));
-    if (!ONLY) row('block', `${b.name}.top`, r.y, o.y, within(o.y, r.y, TOL.blockPct, TOL.blockPx));
+    if (!ONLY) row('block', `${b.name}.top`, r.y, o.y, within(o.y, r.y, TOL.topPct, TOL.blockPx));
   }
   for (const c of MAP.components) {
     if (!inScope(c.block)) continue;

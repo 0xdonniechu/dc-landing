@@ -4,6 +4,7 @@
  "tolerances": {
   "blockPct": 0.03,
   "blockPx": 24,
+  "topPct": 0.01,
   "posPx": 12,
   "sizePct": 0.04,
   "sizePx": 2,

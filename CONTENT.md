@@ -65,7 +65,7 @@ Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and ke
 | Kit | 8 items | PLAN SKILL, BUILDER AGENT, REVIEW AGENT, CHECK SCRIPTS, TASK CONTRACTS, MEMORY NOTES, PROJECT TEMPLATE, GUIDED SETUP, each with one line (two columns of four) | `.kit-list` |
 | Price (#price) | Receipt | title, 8 checked items, price, countdown, "you save today", "then", "pay once, no subscription", barcode, "thank you, now go build" | `.receipt` |
 | Price | H2 / paragraph / CTA | SET IT GOING, COME BACK TO DONE WORK / Start a job, make dinner, come back to a finished folder and a report... | `h2#price-title`, `.price-copy` |
-| Price | Requirement pills | Claude Code on your machine; Any plan that runs Claude; Mac, Windows or Linux | `.req` |
+| Price | Requirement pills | Claude Code on your machine; A plan with Claude Code; Mac, Windows or Linux | `.req` |
 | FAQ (#faq) | 9 questions and answers | what you do; brief; which app/plan; coding; file timing; languages; client work; price; numbers | `.faq-grid details` |
 | Final band | H2 / line | STOP PROMPTING. START SHIPPING. / One folder, three styles, and work you never had to check twice. | `h2#final-title`, `.final .lead` |
 | Final band | Countdown boxes, note | DAYS/HRS/MIN/SEC, "left at $19. Then it's $39." | `.cd-row` |

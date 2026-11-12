@@ -562,7 +562,7 @@ ol.kit-list > .kit-item { display: flex; gap: 1rem; padding: 1rem 0; border-bott
 .r-pay { font-size: .76rem; }
 .barcode { height: 2.5rem; margin-top: .75rem; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 17px, var(--ink) 17px 19px, transparent 19px 20px); }
 .r-thanks { text-align: center; font-size: .72rem; color: var(--ink-2); margin-top: .5rem; }
-.mascot-money { right: -3.5rem; bottom: -3.5rem; width: min(8.5rem, 136px); rotate: 6deg; } /* a sticker: it keeps its size when the text grows, so it stays inside the page */
+.mascot-money { right: max(-3.5rem, -56px); bottom: max(-3.5rem, -56px); width: min(8.5rem, 136px); rotate: 6deg; } /* a sticker: its size and offset stay fixed when the text grows, so it stays inside the page and off the pills */
 .price-copy { min-width: 0; }
 .price-copy .h2 { margin-bottom: 1rem; line-height: 1.06; }
 .inside-band .h2 { line-height: 1.06; }
@@ -694,7 +694,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .three-steps { margin-top: 1.9375rem; }
   .mascot-nerd { right: 10%; }
   .nav { display: none; }
-  .mascot-money { right: -20px; bottom: -2.5rem; }
+  .mascot-money { right: -20px; bottom: max(-2.5rem, -40px); }
   .think-in { min-height: 0; justify-content: flex-start; }
   .think-copy { width: 100%; }
   .idx { margin-bottom: 0; }
@@ -718,7 +718,6 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .term-body { font-size: .8125rem; }
   .step-m { display: none; }
   .arrow-li { display: none; }
-  .kit-item:nth-child(5) { padding-top: 20px; }
   .faq-grid { grid-template-columns: 1fr; }
   .faq-col:first-child details:last-child { border-bottom: 0; }
   .hero { --fan-h: 21.25rem; --fan-trim: 0px; min-height: 59.25rem; padding-top: 1.5rem; }

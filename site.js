@@ -9,25 +9,48 @@
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
   /* ---------- config: prices, checkout, deadline ---------- */
-  const early = Number(root.dataset.price);
-  const later = Number(root.dataset.priceLater);
+  // The static HTML shows the regular price and keeps every early-price piece
+  // `hidden` (data-early). Early wording is revealed here only while a valid early
+  // price, a valid regular price and a future deadline all exist; anything missing or
+  // invalid leaves the static regular-price text in place.
+  const num = s => {
+    if (s == null || String(s).trim() === '') return NaN;
+    const n = Number(s);
+    return Number.isFinite(n) && n >= 0 ? n : NaN;
+  };
+  const early = num(root.dataset.price);
+  const later = num(root.dataset.priceLater);
   const checkout = (root.dataset.checkout || '#price').trim() || '#price';
-  const deadline = new Date(root.dataset.deadline).getTime();
+  const deadline = new Date(root.dataset.deadline || '').getTime();
   const hasDeadline = Number.isFinite(deadline);
+  const pricesOk = Number.isFinite(early) && Number.isFinite(later);
   const money = n => `$${n}`;
-  let expired = hasDeadline && Date.now() >= deadline;
+  let earlyActive = pricesOk && hasDeadline && Date.now() < deadline;
 
-  const bindings = () => ({
-    'price': money(expired ? later : early),
-    'price-later': money(later),
-    'save': money(Math.max(0, later - early)),
-  });
-  function applyBindings() {
+  const bindings = () => {
+    const v = {};
+    if (Number.isFinite(later)) { v['price'] = money(later); v['price-later'] = money(later); }
+    if (earlyActive) { v['price'] = money(early); v['save'] = money(Math.max(0, later - early)); }
+    return v;
+  };
+  const badge = $('#float-badge');
+  const ticker = $('.ticker');
+  function applyAll() {
     const values = bindings();
     $$('[data-bind]').forEach(el => {
       const v = values[el.dataset.bind];
       if (v !== undefined) el.textContent = v;
     });
+    $$('[data-early]').forEach(el => { el.hidden = !earlyActive; });
+    $$('[data-late]').forEach(el => { el.hidden = earlyActive; });
+    // Accessible names come from the same data, in every state.
+    if (badge && values.price) badge.setAttribute('aria-label', `Get the kit, ${earlyActive ? 'early price ' : ''}${values.price}`);
+    if (ticker) {
+      if (earlyActive) {
+        const ends = new Date(deadline).toLocaleDateString('en', { month: 'long', day: 'numeric' });
+        ticker.setAttribute('aria-label', `Early price ${values.price}: save ${values.save} today, then ${values['price-later']}. Ends ${ends}.`);
+      } else ticker.removeAttribute('aria-label');
+    }
   }
   function applyCheckout() {
     $$('a[data-cta]').forEach(a => {
@@ -35,22 +58,22 @@
       if (/^https?:/i.test(checkout)) a.setAttribute('rel', 'noopener');
     });
   }
-  function applyExpiry() {
-    $$('[data-early]').forEach(el => { el.hidden = expired; });
-    $$('[data-late]').forEach(el => { el.hidden = !expired; });
-  }
 
   /* ---------- countdown ---------- */
   // Visible timers never sit in a live region. One polite, hourly message is the
   // only thing a screen reader announces (never one per second).
   const status = $('#deadline-status');
   let lastHourSaid = -1;
+  let interval;
   const pad = n => String(n).padStart(2, '0');
   function tick() {
-    if (!hasDeadline) return;
+    if (!earlyActive) return;
     const left = deadline - Date.now();
     if (left <= 0) {
-      if (!expired) { expired = true; applyBindings(); applyExpiry(); }
+      earlyActive = false;
+      clearInterval(interval);
+      applyAll();
+      if (status) status.textContent = Number.isFinite(later) ? `The price is now ${money(later)}.` : '';
       return;
     }
     const s = Math.floor(left / 1000);
@@ -65,11 +88,14 @@
       status.textContent = `Early price ends in ${d} days and ${h} hours.`;
     }
   }
-  applyBindings();
+  applyAll();
   applyCheckout();
-  applyExpiry();
   tick();
-  if (hasDeadline && !expired) setInterval(tick, 1000);
+  if (earlyActive) interval = setInterval(tick, 1000);
+
+  /* ---------- reduced motion is live: every effect follows the setting while the page is open ---------- */
+  const motionHooks = [];
+  reduced.addEventListener('change', () => motionHooks.forEach(fn => fn(reduced.matches)));
 
   /* ---------- hero prompt typing ---------- */
   const typed = $('#typed');
@@ -78,9 +104,10 @@
     'review this repo and fix what is weak',
     'turn my notes into a weekly report',
   ];
-  if (typed && !reduced.matches) {
-    let i = 0, n = 0, dir = 1, timer;
+  if (typed) {
+    let i = 0, n = 0, dir = 1, timer, running = false;
     const step = () => {
+      if (!running) return;
       const full = prompts[i];
       n += dir;
       typed.textContent = full.slice(0, n);
@@ -89,15 +116,23 @@
       else if (dir === -1 && n === 0) { dir = 1; i = (i + 1) % prompts.length; wait = 400; }
       timer = setTimeout(step, wait);
     };
-    typed.textContent = '';
-    timer = setTimeout(step, 600);
+    const start = () => {
+      if (running) return;
+      running = true; i = 0; n = 0; dir = 1;
+      typed.textContent = '';
+      timer = setTimeout(step, 600);
+    };
+    const stop = () => { running = false; clearTimeout(timer); typed.textContent = prompts[0]; };
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) clearTimeout(timer); else { clearTimeout(timer); timer = setTimeout(step, 300); }
+      if (!running) return;
+      clearTimeout(timer);
+      if (!document.hidden) timer = setTimeout(step, 300);
     });
+    motionHooks.push(isReduced => (isReduced ? stop() : start()));
+    if (!reduced.matches) start();
   }
 
   /* ---------- ticker pause control (WCAG 2.2.2) ---------- */
-  const ticker = $('.ticker');
   const tickerBtn = $('#ticker-ctl');
   if (ticker && tickerBtn) {
     tickerBtn.addEventListener('click', () => {
@@ -109,29 +144,33 @@
   /* ---------- steps tick when the terminal scrolls into view ---------- */
   const steps = $$('.step');
   const terminal = $('#terminal');
-  const tickAll = () => steps.forEach(s => s.classList.add('done'));
   if (steps.length && terminal) {
+    let stepIO, stepTimers = [];
+    const tickAll = () => { stepTimers.forEach(clearTimeout); stepTimers = []; steps.forEach(s => s.classList.add('done')); };
     if (reduced.matches || !('IntersectionObserver' in window)) tickAll();
     else {
-      const io = new IntersectionObserver(entries => {
+      stepIO = new IntersectionObserver(entries => {
         if (!entries.some(e => e.isIntersecting)) return;
-        io.disconnect();
-        steps.forEach((s, k) => setTimeout(() => s.classList.add('done'), 450 + k * 520));
+        stepIO.disconnect();
+        steps.forEach((s, k) => stepTimers.push(setTimeout(() => s.classList.add('done'), 450 + k * 520)));
       }, { threshold: 0.35 });
-      io.observe(terminal);
+      stepIO.observe(terminal);
     }
+    motionHooks.push(isReduced => { if (isReduced) { if (stepIO) stepIO.disconnect(); tickAll(); } });
   }
 
   /* ---------- ring gauge fills when visible ---------- */
   const ring = $('.ring');
   if (ring) {
+    let ringIO;
     if (reduced.matches || !('IntersectionObserver' in window)) ring.classList.add('is-in');
     else {
-      const io = new IntersectionObserver(entries => {
-        if (entries.some(e => e.isIntersecting)) { ring.classList.add('is-in'); io.disconnect(); }
+      ringIO = new IntersectionObserver(entries => {
+        if (entries.some(e => e.isIntersecting)) { ring.classList.add('is-in'); ringIO.disconnect(); }
       }, { threshold: 0.5 });
-      io.observe(ring);
+      ringIO.observe(ring);
     }
+    motionHooks.push(isReduced => { if (isReduced) { if (ringIO) ringIO.disconnect(); ring.classList.add('is-in'); } });
   }
 
   /* ---------- selectable style cards (toggle buttons) ---------- */
@@ -148,17 +187,19 @@
   /* ---------- reveal on scroll ---------- */
   const reveals = $$('.reveal');
   if (reveals.length) {
-    if (reduced.matches || !('IntersectionObserver' in window)) reveals.forEach(el => el.classList.add('in'));
+    let revealIO;
+    const showAll = () => reveals.forEach(el => el.classList.add('in'));
+    if (reduced.matches || !('IntersectionObserver' in window)) showAll();
     else {
-      const io = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      revealIO = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
       }, { rootMargin: '0px 0px -8% 0px', threshold: 0.1 });
-      reveals.forEach(el => io.observe(el));
+      reveals.forEach(el => revealIO.observe(el));
     }
+    motionHooks.push(isReduced => { if (isReduced) { if (revealIO) revealIO.disconnect(); showAll(); } });
   }
 
   /* ---------- floating badge shows once the hero has scrolled away ---------- */
-  const badge = $('#float-badge');
   const hero = $('#top');
   if (badge && hero) {
     if (!('IntersectionObserver' in window)) badge.classList.add('show');

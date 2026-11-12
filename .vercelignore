@@ -1,0 +1,9 @@
+# Static deploy of the repo root: publish only the site. Ignore everything, then re-include.
+# (gitignore syntax: a file inside an ignored directory cannot be re-included, so the
+# top level is ignored with /* and each public path is re-included with !.)
+/*
+!/index.html
+!/site.css
+!/site.js
+!/favicon.svg
+!/assets/

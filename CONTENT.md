@@ -11,7 +11,7 @@ All copy lives in `index.html`. Prices, deadline and checkout come from data att
 | Settings | Early-price deadline (must be real) | `2026-11-30T23:59:59+07:00` | `<html data-deadline>` |
 | Settings | Checkout URL (CTA links) | `#price` | `<html data-checkout>` |
 
-Derived by `site.js`: "save" = later minus early; after the deadline the price shows the later price and every `data-early` element (badge, ticker, countdowns, receipt early lines) is hidden and every `data-late` element shown. Each price span in the HTML has a fallback text (`$19`, `$39`, `$20`) that `site.js` overwrites.
+Derived by `site.js`: the static HTML shows the **regular** price (`$39`) and keeps every early-price piece (badge, ticker, countdowns, receipt early lines, FAQ early answer) `hidden` with a `data-early` mark; `data-late` pieces are visible. `site.js` reveals the early pieces, swaps the price spans to the early price, and computes "save" (later minus early) only while `data-price` and `data-price-later` are valid numbers and `data-deadline` is a valid date in the future. A missing or invalid price keeps the HTML's static text; a missing or invalid deadline means no early price at all. At expiry (even with the page open) the early pieces hide again, the prices show the regular price, and the screen-reader status line says only that the price is now the regular price. The float badge and ticker accessible names are built from the same data in every state, never hard-coded. No-JS visitors and crawlers therefore never see early pricing.
 
 ## Copy
 
@@ -32,7 +32,7 @@ Derived by `site.js`: "save" = later minus early; after the deadline the price s
 | Hero | Small line | Download right away, one payment, see how it works (#how) | `#top .fine` |
 | Fan | View tags (samples) | 12,345 / 23,456 / 67,890 / 34,567 / 45,678 VIEWS | `.fan .tag` |
 | Fan | Scene text | terminal lines, checklist, "ONE PROMPT" folder, self-check 6/8, skill cards | `.fan .scene` |
-| Ticker | Phrases | THEN price-later, SAVE x TODAY, EARLY PRICE price, ENDS IN countdown | `.ticker-group` (three copies, two `aria-hidden`) |
+| Ticker | Phrases | THEN price-later, SAVE x TODAY, EARLY PRICE price, ENDS IN countdown; its `aria-label` is built in `site.js` from the price and deadline data | `.ticker-group` (three copies, two `aria-hidden`) |
 | Doubts band | H2 | YOU MIGHT BE THINKING... | `h2#think-title` |
 | Doubts band | Pills | 01 THEY NEVER FINISH, 02 IT'S HARD TO SET UP, 03 IT ALL LOOKS THE SAME | `.pills` |
 | Proof (#proof, #myth-1) | Struck quote | "AGENTS NEVER FINISH THE JOB." | `#myth-1 .strike` |
@@ -65,7 +65,7 @@ Derived by `site.js`: "save" = later minus early; after the deadline the price s
 | Footer | Product and handle | DC Agent Kit, @donniechublog | `.foot-l` |
 | Footer | Honesty note | Every number on this page is a sample until launch. What you get out of the kit depends on what you ask it to do. | `.foot-r` |
 | Footer | Line | >_ vibe working & agentic AI | `.foot-line` |
-| Floating badge | Ring text | GET THE KIT (repeated) | `#float-badge textPath` |
+| Floating badge | Ring text | GET THE KIT (repeated); accessible name "Get the kit, [early price] $N" is built in `site.js` | `#float-badge textPath` |
 
 ## Before launch
 
@@ -91,3 +91,12 @@ The `countdown timer live region` search returned `accessibility` (live regions)
 ## Legacy-patterns checklist (webdev-playbook) walk
 
 No hand-built modal or tooltip, no float/table layout, no jQuery or polyfill, no `var`/XHR, no inline script or style block, no `innerHTML` (only `textContent`). New controls (style cards, ticker button, FAQ summaries, CTAs) have names, keyboard paths and visible focus. Images and fonts have size hints and lazy loading below the fold. Newer CSS (`::details-content`, `interpolate-size`) sits inside `@supports`. Not run: screen-reader pass, Lighthouse, cross-browser (Safari/Firefox) check.
+
+## Baseline notes
+
+Features used that are Newly available, not Widely available. Each is guarded or degrades harmlessly:
+
+- `<details name="faq">` (exclusive accordion): in a browser without it each question simply opens independently; every answer stays reachable.
+- `font-size-adjust: from-font`: inside `@supports (font-size-adjust: from-font)`; without it the fallback font stacks just reflow a little more when the web font loads.
+- `text-wrap: pretty` (final headline): inside `@supports (text-wrap: pretty)`; without it the headline wraps as normal text.
+- `::details-content` and `interpolate-size` (accordion slide): inside `@supports` and `prefers-reduced-motion: no-preference`; without them the answer opens instantly.

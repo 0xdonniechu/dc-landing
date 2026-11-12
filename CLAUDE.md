@@ -23,8 +23,14 @@ A static page (`index.html`, `site.css`, `site.js`, `assets/`) that sells the DC
 - No external scripts or trackers without the owner's approval (only Google Fonts is allowed). Every animation stops or becomes static under `prefers-reduced-motion: reduce`.
 - No fake urgency: the deadline in `data-deadline` must be a real one, and expired countdowns and "early price" wording must disappear (`site.js` does this).
 - Every number that is a claim stays an obvious sample until launch; the footer says so. Editable strings live in `CONTENT.md`.
+- Publish scope: only what `.vercelignore` re-includes is published (index.html, site.css, site.js, favicon.svg, assets/); adding a public file means adding it there. CLAUDE.md, CONTENT.md, README.md, scripts/, package files, `.claude/`, `.check/`, `HANDOFF.md` and `.env*` stay out.
+- Static HTML shows the regular price; every early-price piece is `hidden` and marked `data-early`, and `site.js` reveals it only while a valid `data-price`, `data-price-later` and a future `data-deadline` all exist.
 - Deploy: Vercel via the `vercel` wrapper (0xdonniechu login). Check `.vercel/project.json` `orgId` first. Preview first; production only with the owner's approval; never one deploy per edit.
-- Git: identity `0xdonniechu <donniechu.eth@gmail.com>`, repo public on GitHub under 0xdonniechu (not yet created). No Ambysto rules here. Keep private paths and names out; the repo is public.
+- Git: identity `0xdonniechu` (the machine default), repo public on GitHub under 0xdonniechu (not yet created). No Ambysto rules here. Keep private paths and names out; the repo is public.
+
+## Read when
+- Touching `<html data-*>`, `site.js` countdown or price code, or any editable copy: read `CONTENT.md` first (settings table, what `site.js` derives, baseline notes).
+- Touching `.vercelignore` or anything about deploying: read the Rules above on publish scope and deploy before you start.
 
 ## Session state
 - Work in progress lives in `HANDOFF.md` (gitignored). If it exists at session start, read it before anything else. Update it with `/handoff` before `/clear`; delete it once the goal is finished and recorded.

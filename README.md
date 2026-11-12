@@ -6,3 +6,4 @@ One-page static landing site for DC Agent Kit by donniechu (@donniechublog): pla
 - `npm run dev` serves the folder at http://localhost:4173.
 - `npm run check` loads the page at desktop, mobile and reduced-motion settings and fails on overflow, console errors, missing alt text and similar; screenshots land in `.check/`.
 - Prices, deadline and checkout URL are data attributes on `<html>`; every other editable string is listed in `CONTENT.md`.
+- `.vercelignore` limits a static `vercel` deploy of the repo root to `index.html`, `site.css`, `site.js`, `favicon.svg` and `assets/`; a new public file must be re-included there.

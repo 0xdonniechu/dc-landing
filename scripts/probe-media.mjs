@@ -406,6 +406,68 @@ for (const width of [1440, 950, 768, 390]) {
   }
 }
 
+/* ---- text zoom, readable: the generic check above tests text against its data-p host; this one tests text against other text.
+   (1) No text element that holds words is squeezed to near-zero width (boxes of any size count; display: none and the
+   screen-reader-only clip are not "squeezed"). (2) No two text elements of one block have overlapping line rects (1 px slack;
+   an element and its ancestor or descendant are not a pair; ZOOM_SKIP and ZOOM_HANG elements are left out). Line rects are
+   trimmed by the half-leading like above, so a tight line-height does not count as an overlap. ---- */
+for (const width of [1440, 1100, 950, 768, 390]) {
+  for (const px of ZOOMS) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    const pg = await newPage(ctx, []);
+    await pg.goto(url, { waitUntil: 'networkidle' });
+    await pg.evaluate(() => document.fonts.ready);
+    const res = await pg.evaluate(([px, blocks, hang, skip]) => {
+      document.documentElement.style.fontSize = `${px}px`;
+      document.querySelectorAll('[data-early]').forEach(e => { e.hidden = false; });
+      void document.body.offsetHeight;
+      const out = Object.fromEntries(blocks.map(b => [b, { elements: 0, squeezed: [], overlaps: [] }]));
+      const name = el => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''}`;
+      const items = {};
+      for (const el of document.querySelectorAll('body *')) {
+        const host = el.closest('[data-p]');
+        if (!host) continue;
+        const block = host.getAttribute('data-p').split('.')[0];
+        if (!out[block] || el.closest(skip) || el.matches(hang)) continue;
+        const own = [...el.childNodes].filter(n => n.nodeType === 3 && n.nodeValue.trim());
+        if (!own.length || !el.getClientRects().length) continue; // no text of its own, or display: none
+        const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
+        if (cs.visibility === 'hidden' || (cs.clipPath !== 'none' && eb.width <= 2 && eb.height <= 2)) continue; // hidden, or a screen-reader-only clip
+        out[block].elements++;
+        if (eb.width < 4) out[block].squeezed.push(`${name(el)} is ${eb.width.toFixed(1)}px wide`);
+        const lh = parseFloat(cs.lineHeight), lines = [];
+        for (const n of own) {
+          const r = document.createRange(); r.selectNodeContents(n);
+          for (const t of r.getClientRects()) {
+            if (t.width === 0 && t.height === 0) continue;
+            const lead = Number.isFinite(lh) ? Math.max(0, (t.height - lh) / 2) : 0;
+            lines.push({ l: t.left, t: t.top + lead, r: t.right, b: t.bottom - lead });
+          }
+        }
+        (items[block] ||= []).push({ el, lines });
+      }
+      for (const [block, list] of Object.entries(items)) {
+        for (let i = 0; i < list.length && out[block].overlaps.length < 6; i++) for (let j = i + 1; j < list.length; j++) {
+          const a = list[i], b = list[j];
+          if (a.el.contains(b.el) || b.el.contains(a.el)) continue;
+          let hit = null;
+          for (const p of a.lines) { for (const q of b.lines) {
+            const w = Math.min(p.r, q.r) - Math.max(p.l, q.l), h = Math.min(p.b, q.b) - Math.max(p.t, q.t);
+            if (w > 1 && h > 1) { hit = `${Math.round(w)}x${Math.round(h)}`; break; }
+          } if (hit) break; }
+          if (hit) { out[block].overlaps.push(`${name(a.el)} x ${name(b.el)} ${hit}`); if (out[block].overlaps.length >= 6) break; }
+        }
+      }
+      return out;
+    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(',')]);
+    for (const b of ZOOM_BLOCKS) {
+      ok(`text zoom ${px}px root at ${width}: ${b} has no squeezed text`, res[b].squeezed.length === 0 && res[b].elements > 0, { elements: res[b].elements, squeezed: res[b].squeezed.slice(0, 6) });
+      ok(`text zoom ${px}px root at ${width}: ${b} text does not overlap other text`, res[b].overlaps.length === 0, { overlaps: res[b].overlaps });
+    }
+    await ctx.close();
+  }
+}
+
 await browser.close();
 server.close();
 console.log(bad ? `${bad} FAILED` : 'all passed');

@@ -39,6 +39,46 @@ Intent: `intent/2026-11-12-layout-parity.md` (approved). Branch: `layout-parity`
 - **The gate itself is wrong** and passes a page that drifts. Caught by Proof 6: break one breakpoint and one component size on purpose, and the gate must fail.
 - **The ticker moves out of the hero.** At the reference it is a separate block over the hero/watch join. Caught by: the block-list check.
 
+## Task details
+What each task builds; the contract bullets are under `## Tasks`.
+
+### T1 Parity gate, reference snapshot and component map
+Write the gate described under "How parity is measured". Fill the component map for every block, and store the reference snapshot for the 5 widths. Its first run reports today's drift; it is expected to fail until T2–T8 are done.
+
+### T2 Page frame: breakpoints, container, header, ticker, heading scale, myth row
+Breakpoints 1100/900/700; `.wrap` 1180 wide with the reference's side gutters at each width; header 83 px (93 at 390); the h2 (58/41.8/32 px) and big h2 (84/57/40 px) scales; the myth row (number disc and struck line); the ticker as its own block after the hero.
+
+### T3 Hero
+Four phones (left, inner-left, centre, inner-right) with their labels and the reference's boxes. The mascot stands at the right like the reference's presenter image. Kicker, h1, lead, prompt bar, CTA row and launch tape take the reference's boxes. The centre phone keeps the HyperFrames loop.
+
+### T4 Watch section and proof tickets
+- **Watch section.** A new 60-second block: kicker, h2, a 980×561 frame at 1440, a play button and a CTA row. Video 1 (with sound) plays centred inside the frame on a brand background, only on the user's click.
+- **Proof tickets.** Three horizontal cards (about 353×208 at 1440) with a 100×173 thumbnail. A tap opens the video in a `<dialog>`: card 1 plays video 2, card 2 plays video 3, card 3 plays the hero loop.
+- **Media probe.** Write `scripts/probe-media.mjs` covering the hero, watch and dialog behaviour listed under Risks, the slow-load case included.
+
+### T5 "You might be thinking" and how
+- **Night block:** h2 770 wide, the index links row and the mascot at right (300×386).
+- **How block:**
+  - The terminal is 681×384 and the phone 250×461, side by side down to 900 px.
+  - The three-step chain uses links of 300 px with arrows between them.
+
+### T6 Styles and self-check
+- **Styles:** the 766-wide column (heading, picks, panel, paint row) and the 270×498 phone.
+- **Self-check:** the 518-wide copy column, the 526×444 report card and the mascot at its bottom right.
+
+### T7 Inside and price
+- **Inside:** two columns of four items, each 514×114.
+- **Price:** the 318×608 receipt and the 710-wide buy side.
+
+### T8 FAQ, final, footer, badge
+- **FAQ:** two columns of `<details>` items, 522×60 each.
+- **Final:** the 780-wide copy column with its countdown box, the button and the fine print, plus the mascot at 300×371.
+- **Footer:** 90 px tall.
+- **Badge:** the floating badge takes the reference's box.
+
+### T9 Docs and the whole gate
+`CLAUDE.md` Verify gains the parity gate and the media probe; its "owner visual check" line points to the parity screenshots. `CONTENT.md` lists the new watch block and the dialog. Run the full gate.
+
 ## Tasks
 
 ### T1 (main) Parity gate, reference snapshot and component map
@@ -47,60 +87,42 @@ Intent: `intent/2026-11-12-layout-parity.md` (approved). Branch: `layout-parity`
 - check: `node scripts/parity.mjs --report-only`
 
 ### T2 (builder) Page frame: breakpoints, container, header, ticker, heading scale, myth row
-Breakpoints 1100/900/700; `.wrap` 1180 wide with the reference's side gutters at each width; header 83 px (93 at 390); the h2 (58/41.8/32 px) and big h2 (84/57/40 px) scales; the myth row (number disc and struck line); the ticker as its own block after the hero.
 - allow: `index.html` `site.css` `site.js`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only header,ticker`
 
 ### T3 (builder) Hero
-Four phones (left, inner-left, centre, inner-right) with their labels and the reference's boxes. The mascot stands at the right like the reference's presenter image. Kicker, h1, lead, prompt bar, CTA row and launch tape take the reference's boxes. The centre phone keeps the HyperFrames loop.
 - allow: `index.html` `site.css` `site.js` `assets/mascot/**`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only hero`
 
 ### T4 (builder) Watch section and proof tickets
-- **Watch section.** A new 60-second block: kicker, h2, a 980×561 frame at 1440, a play button and a CTA row. Video 1 (with sound) plays centred inside the frame on a brand background, only on the user's click.
-- **Proof tickets.** Three horizontal cards (about 353×208 at 1440) with a 100×173 thumbnail. A tap opens the video in a `<dialog>`: card 1 plays video 2, card 2 plays video 3, card 3 plays the hero loop.
-- **Media probe.** Write `scripts/probe-media.mjs` covering the hero, watch and dialog behaviour listed under Risks, the slow-load case included.
 - allow: `index.html` `site.css` `site.js` `assets/video/**` `scripts/probe-media.mjs`
 - check: `node scripts/check.mjs`
 - check: `node scripts/probe-media.mjs`
 - check: `node scripts/parity.mjs --only watch,proof`
 
 ### T5 (builder) "You might be thinking" and how
-- **Night block:** h2 770 wide, the index links row and the mascot at right (300×386).
-- **How block:**
-  - The terminal is 681×384 and the phone 250×461, side by side down to 900 px.
-  - The three-step chain uses links of 300 px with arrows between them.
 - allow: `index.html` `site.css` `site.js`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only night,how`
 
 ### T6 (builder) Styles and self-check
-- **Styles:** the 766-wide column (heading, picks, panel, paint row) and the 270×498 phone.
-- **Self-check:** the 518-wide copy column, the 526×444 report card and the mascot at its bottom right.
 - allow: `index.html` `site.css` `site.js`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only styles,check`
 
 ### T7 (builder) Inside and price
-- **Inside:** two columns of four items, each 514×114.
-- **Price:** the 318×608 receipt and the 710-wide buy side.
 - allow: `index.html` `site.css` `site.js`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only inside,price`
 
 ### T8 (builder) FAQ, final, footer, badge
-- **FAQ:** two columns of `<details>` items, 522×60 each.
-- **Final:** the 780-wide copy column with its countdown box, the button and the fine print, plus the mascot at 300×371.
-- **Footer:** 90 px tall.
-- **Badge:** the floating badge takes the reference's box.
 - allow: `index.html` `site.css` `site.js`
 - check: `node scripts/check.mjs`
 - check: `node scripts/parity.mjs --only faq,final,footer,badge`
 
 ### T9 (main) Docs and the whole gate
-`CLAUDE.md` Verify gains the parity gate and the media probe; its "owner visual check" line points to the parity screenshots. `CONTENT.md` lists the new watch block and the dialog. Run the full gate.
 - allow: `CLAUDE.md` `CONTENT.md`
 - check: `node scripts/parity.mjs`
 - check: `node scripts/check.mjs`

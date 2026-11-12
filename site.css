@@ -138,12 +138,12 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 
 /* Hero */
 /* Geometry (box sizes, offsets, block height) is set from the reference numbers in scripts/parity-ref.json. */
-.hero { padding-block: clamp(44px, calc(44px + (100vw - 1100px) * .0088), 47px) 0; height: clamp(1029px, calc(1029px + (100vw - 1100px) * .4706), 1189px); }
+.hero { padding-block: clamp(44px, calc(44px + (100vw - 1100px) * .0088), 47px) 0; min-height: clamp(1029px, calc(1029px + (100vw - 1100px) * .4706), 1189px); }
 .hero-in { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .kicker { font-size: clamp(1.4rem, 2vw, 1.85rem); color: var(--blue); rotate: -2deg; line-height: 1; margin-bottom: 4px; }
-.hero .kicker { font-size: clamp(21.6px, calc(21.6px + (100vw - 1100px) * .00941), 24.8px); line-height: 1.13; margin-bottom: 10px; }
+.hero .kicker { font-size: clamp(1.35rem, calc(1.35rem + (100vw - 1100px) * .00941), 1.55rem); line-height: 1.13; margin-bottom: 10px; }
 .hero .h1 { width: 100%; line-height: 1.0575; }
-.hero .lead { margin: 16px auto 0; max-width: 32em; font-size: 20.2px; line-height: 1.5; }
+.hero .lead { margin: 16px auto 0; max-width: 32em; font-size: 1.2625rem; line-height: 1.5; }
 .prompt {
   width: min(720px, 100%); margin-top: 28px;
   display: flex; align-items: center; gap: 12px;
@@ -223,8 +223,9 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 
 .phone-c .screen { height: auto; }
 .hero-video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: var(--paper); }
+/* The pause chip takes clicks and taps (WCAG 2.2.2) although .fan-wrap is click-through. */
 .video-ctl {
-  position: absolute; z-index: 4; top: 14px; right: 20px; min-height: 24px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+  position: absolute; z-index: 4; top: 14px; right: 20px; min-height: 24px; pointer-events: auto; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
   background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); border-radius: 8px; padding: 3px 8px;
   font: 700 .62rem/1 var(--font-mono); letter-spacing: .08em; box-shadow: 2px 2px 0 var(--ink);
 }
@@ -518,10 +519,10 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
 /* Breakpoints: 1100, 900 and 700 px, the same as the reference */
 @media (max-width: 1100px) {
   .nav { gap: 18px; }
-  .hero { height: clamp(897px, calc(930px + (100vw - 950px) * .66), 1029px); }
+  .hero { min-height: clamp(897px, calc(930px + (100vw - 950px) * .66), 1029px); }
   .hero { padding-top: clamp(36px, calc(39px + (100vw - 950px) * .0333), 44px); }
-  .hero .kicker { font-size: clamp(19.6px, calc(19.6px + (100vw - 950px) * .01333), 21.6px); }
-  .hero .lead { font-size: 17.6px; }
+  .hero .kicker { font-size: clamp(1.225rem, calc(1.225rem + (100vw - 950px) * .01333), 1.35rem); }
+  .hero .lead { font-size: 1.1rem; }
   .mascot-wave { left: calc(50% + 300px); width: 200px; }
 }
 @media (max-width: 900px) {
@@ -532,7 +533,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .nav { display: none; }
   .mascot-money { right: -20px; }
   .mascot-think { opacity: .9; }
-  .hero { height: clamp(867px, calc(877px + (100vw - 768px) * .15), 897px); }
+  .hero { min-height: clamp(867px, calc(877px + (100vw - 768px) * .15), 897px); }
   .hero { padding-top: 31px; }
   .ph-l { display: none; }
   .mascot-wave { left: calc(50% + 230px); width: 170px; }
@@ -545,7 +546,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .faq-grid { grid-template-columns: 1fr; }
   .faq-col:first-child details:last-child { border-bottom: 0; }
   .foot-r { text-align: left; }
-  .hero { height: 948px; padding-top: 24px; }
+  .hero { min-height: 948px; padding-top: 24px; }
   .hero .prompt { height: 47px; }
   .hero .cta-row .btn { width: 222px; }
   .ph-il, .ph-ir { width: 200px; height: 315px; bottom: -111px; }

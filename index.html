@@ -151,6 +151,23 @@
   <button class="ticker-ctl mono" type="button" id="ticker-ctl">Pause ticker</button>
 </div>
 
+<!-- 3c. WATCH: the kit in 60 seconds (owner video 1) -->
+<section id="watch" class="band light watch" data-p="watch" aria-labelledby="watch-title">
+  <div class="wrap watch-in">
+    <p class="kicker hand" data-p="watch.kicker">watch it</p>
+    <h2 id="watch-title" class="h2" data-p="watch.h2">THE WHOLE KIT, EXPLAINED IN <span class="hl">60 SECONDS</span></h2>
+    <div class="vframe" data-p="watch.frame">
+      <video id="watch-video" class="watch-video" preload="none" playsinline controls width="720" height="1280" poster="assets/video/reels/reel-1-poster.webp" aria-label="DC Agent Kit in 60 seconds: promo video, 63 seconds, with Vietnamese voice-over and burned-in Vietnamese subtitles">
+        <source src="assets/video/reels/reel-1.mp4" type="video/mp4">
+      </video>
+      <button class="vplay mono" id="watch-play" data-p="watch.play" type="button" hidden aria-label="Play with sound: the kit in 60 seconds, 63 second video"><span aria-hidden="true">&#9654;</span> Play with sound</button>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-lg" data-p="watch.cta" href="#price" data-cta>GET THE KIT <span class="pill-price" data-bind="price">$39</span></a>
+    </div>
+  </div>
+</section>
+
 <!-- 4. DARK: THINKING -->
 <section class="band dark intro" data-p="night" aria-labelledby="think-title">
   <div class="wrap intro-in">
@@ -172,58 +189,40 @@
       <span class="num" aria-hidden="true">01</span>
       <p class="strike"><span class="sr-only">Doubt one: </span>&ldquo;AGENTS NEVER FINISH THE JOB.&rdquo;</p>
     </div>
-    <h2 id="proof-title" class="h2">MINE SHIPPED <span class="hl">1,234+</span> CHECKED TASKS IN A WEEK.</h2>
-    <p class="lead lead-narrow">Every one came out of this folder from a single prompt, and passed its own checks before I saw it. Here are three of them.</p>
+    <h2 id="proof-title" class="h2" data-p="proof.h2">MINE SHIPPED <span class="hl">1,234+</span> CHECKED TASKS IN A WEEK.</h2>
+    <p class="lead lead-narrow" data-p="proof.lead">Every one came out of this folder from a single prompt, and passed its own checks before I saw it. Here are three of them.</p>
 
-    <ul class="proof-cards reveal-group">
-      <li class="proof-card reveal" style="--r:-1.5deg">
-        <div class="reel-frame">
-          <div class="reel">
-            <video class="reel-video" preload="none" playsinline controls width="720" height="1280" poster="assets/video/reels/reel-1-poster.webp" aria-label="SuperAgent.Social promo video 1, 63 seconds, with Vietnamese voice-over and burned-in Vietnamese subtitles">
-              <source src="assets/video/reels/reel-1.mp4" type="video/mp4">
-            </video>
-            <button class="reel-play mono" type="button" hidden aria-label="Play with sound: SuperAgent.Social promo video 1, 63 seconds"><span aria-hidden="true">&#9654;</span> Play with sound</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="big-num">612</p>
-          <p class="num-label mono">TASKS DONE</p>
-          <p class="card-t">SuperAgent.Social promo 1, 63 s, in Vietnamese</p>
-          <p class="mono card-tag">build style</p>
-        </div>
-      </li>
-      <li class="proof-card reveal" style="--r:.8deg">
-        <div class="reel-frame">
-          <div class="reel">
-            <video class="reel-video" preload="none" playsinline controls width="720" height="1280" poster="assets/video/reels/reel-2-poster.webp" aria-label="SuperAgent.Social promo video 2, 62 seconds, with Vietnamese voice-over and burned-in Vietnamese subtitles">
-              <source src="assets/video/reels/reel-2.mp4" type="video/mp4">
-            </video>
-            <button class="reel-play mono" type="button" hidden aria-label="Play with sound: SuperAgent.Social promo video 2, 62 seconds"><span aria-hidden="true">&#9654;</span> Play with sound</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="big-num">415</p>
-          <p class="num-label mono">TASKS DONE</p>
-          <p class="card-t">SuperAgent.Social promo 2, 62 s, in Vietnamese</p>
-          <p class="mono card-tag">review style</p>
-        </div>
-      </li>
-      <li class="proof-card reveal" style="--r:-.8deg">
-        <div class="reel-frame">
-          <div class="reel">
-            <video class="reel-video" preload="none" playsinline controls width="720" height="1280" poster="assets/video/reels/reel-3-poster.webp" aria-label="SuperAgent.Social promo video 3, 52 seconds, with Vietnamese voice-over and burned-in Vietnamese subtitles">
-              <source src="assets/video/reels/reel-3.mp4" type="video/mp4">
-            </video>
-            <button class="reel-play mono" type="button" hidden aria-label="Play with sound: SuperAgent.Social promo video 3, 52 seconds"><span aria-hidden="true">&#9654;</span> Play with sound</button>
-          </div>
-        </div>
-        <div class="card-body">
-          <p class="big-num">207</p>
-          <p class="num-label mono">TASKS DONE</p>
-          <p class="card-t">SuperAgent.Social promo 3, 52 s, in Vietnamese</p>
-          <p class="mono card-tag">write style</p>
-        </div>
-      </li>
+    <ul class="tickets" data-p="proof.tickets">
+      <li><a class="vt" href="assets/video/reels/reel-2.mp4" data-poster="assets/video/reels/reel-2-poster.webp" data-label="Sample video 1, 62 seconds, with Vietnamese voice-over and burned-in Vietnamese subtitles" data-p="proof.ticket1">
+        <span class="vt-thumb"><img src="assets/video/reels/reel-2-poster.webp" width="100" height="173" alt="" loading="lazy" data-p="proof.thumb1"><i class="vt-play" aria-hidden="true">&#9654;</i></span>
+        <span class="vt-body">
+          <span class="sr-only">Play video: </span>
+          <span class="big-num">612</span>
+          <span class="num-label mono">TASKS DONE</span>
+          <span class="mono card-tag">build style</span>
+          <span class="vt-go mono" aria-hidden="true">&#9654; PLAY</span>
+        </span>
+      </a></li>
+      <li><a class="vt" href="assets/video/reels/reel-3.mp4" data-poster="assets/video/reels/reel-3-poster.webp" data-label="Sample video 2, 52 seconds, with Vietnamese voice-over and burned-in Vietnamese subtitles" data-p="proof.ticket2">
+        <span class="vt-thumb"><img src="assets/video/reels/reel-3-poster.webp" width="100" height="173" alt="" loading="lazy"><i class="vt-play" aria-hidden="true">&#9654;</i></span>
+        <span class="vt-body">
+          <span class="sr-only">Play video: </span>
+          <span class="big-num">415</span>
+          <span class="num-label mono">TASKS DONE</span>
+          <span class="mono card-tag">review style</span>
+          <span class="vt-go mono" aria-hidden="true">&#9654; PLAY</span>
+        </span>
+      </a></li>
+      <li><a class="vt" href="assets/video/hero-loop.mp4" data-poster="assets/video/hero-loop-poster.webp" data-muted data-label="Sample video 3, the looping demo clip, no sound" data-p="proof.ticket3">
+        <span class="vt-thumb"><img src="assets/video/hero-loop-poster.webp" width="100" height="173" alt="" loading="lazy"><i class="vt-play" aria-hidden="true">&#9654;</i></span>
+        <span class="vt-body">
+          <span class="sr-only">Play video: </span>
+          <span class="big-num">207</span>
+          <span class="num-label mono">TASKS DONE</span>
+          <span class="mono card-tag">write style</span>
+          <span class="vt-go mono" aria-hidden="true">&#9654; PLAY</span>
+        </span>
+      </a></li>
     </ul>
     <p class="footnote">Sample numbers until launch. Follow the real ones on <a class="ulink" href="https://x.com/donniechublog" rel="noopener">@donniechublog &#8599;</a></p>
   </div>
@@ -541,6 +540,12 @@
     <p class="mono foot-line">&gt;_ vibe working &amp; agentic AI</p>
   </div>
 </footer>
+
+<dialog class="vdialog" id="media-dialog" aria-label="Video player">
+  <button class="vd-close mono" type="button"><span aria-hidden="true">&times;</span> Close<span class="sr-only"> video</span></button>
+  <video class="vd-video" playsinline controls preload="none" width="720" height="1280"></video>
+  <p class="vd-note mono" hidden>This clip has no sound.</p>
+</dialog>
 
 <a class="float-badge" data-p="badge" id="float-badge" href="#price" data-cta aria-label="Get the kit, $39">
   <svg viewBox="0 0 120 120" width="112" height="112" aria-hidden="true" focusable="false">

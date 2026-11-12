@@ -285,7 +285,7 @@ main { overflow-x: clip; }
 /* Quote rows */
 /* The reference's myth box is 58 px tall at every width; its section padding is ~52 px (768) up to 88 px (1440),
    and the styles block starts at its myth row (the how block's bottom padding is the gap). */
-#proof, #how, #styles { --pad-y: clamp(52px, calc(52px + (100vw - 768px) * .0536), 88px); }
+#watch, #proof, #how, #styles { --pad-y: clamp(52px, calc(52px + (100vw - 768px) * .0536), 88px); }
 #proof, #how { padding-top: var(--pad-y); }
 #styles { padding-top: 0; }
 .quote-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; min-height: 58px; }
@@ -294,26 +294,71 @@ main { overflow-x: clip; }
 .strike { font: 400 clamp(1.3rem, 2.4vw, 2rem)/1.1 var(--font-display); text-transform: uppercase; color: var(--ink-2); text-decoration: line-through; text-decoration-thickness: 4px; text-decoration-color: var(--blue); }
 .dark .strike { color: var(--cream-dim); text-decoration-color: var(--yellow); }
 
-/* Proof */
-.proof-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px, 2.4vw, 32px); margin-top: 44px; }
-.proof-card { display: flex; flex-direction: column; gap: 16px; background: var(--cream); color: var(--ink); border: var(--bw) solid var(--cream); border-radius: 12px; padding: 14px; rotate: var(--r); box-shadow: var(--shadow); box-shadow: 6px 6px 0 #000; }
-.reel-frame { width: min(100%, 300px); margin-inline: auto; background: var(--ink); border-radius: 28px; padding: 8px; box-shadow: var(--shadow-sm); }
-.reel { position: relative; border-radius: 20px; overflow: hidden; background: var(--ink); }
-.reel-video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: var(--ink); }
-.reel-video:focus-visible { outline: 3px solid var(--yellow); outline-offset: -3px; }
-.reel-play {
-  position: absolute; z-index: 2; left: 50%; top: 50%; translate: -50% -50%; min-height: 44px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap;
-  background: var(--yellow); color: var(--ink); border: 3px solid var(--ink); border-radius: 10px; padding: 10px 16px;
-  font: 700 .8rem/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; box-shadow: var(--shadow-sm);
+/* Watch: the kit in 60 seconds. Geometry from scripts/parity-ref.json: a 980x561 frame (16:9-ish), the play pill
+   at its bottom, the CTA 30 px below. The vertical video plays centred in the frame on the brand colour. */
+.watch { padding-top: calc(var(--pad-y) + 14px); padding-bottom: var(--pad-y); }
+.watch-in { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.watch .kicker { font-size: clamp(22px, calc(22px + (100vw - 950px) * .0143), 28.8px); line-height: 1; letter-spacing: -.03em; margin: 0 0 8px; }
+.watch .h2 { width: 100%; }
+.vframe {
+  position: relative; display: grid; place-items: center; width: min(100%, 980px); aspect-ratio: 980 / 561; margin-top: 34px; overflow: hidden;
+  background-color: var(--blue); background-image: radial-gradient(rgba(255, 255, 255, .16) 1.2px, transparent 1.4px); background-size: 22px 22px;
+  border: var(--bw) solid var(--ink); border-radius: 18px; box-shadow: var(--shadow);
 }
-.reel-play:hover { background: var(--ink); color: var(--cream); border-color: var(--cream); }
-.reel-play:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
-.reel-play[hidden] { display: none; }
+.watch-video { display: block; height: 100%; width: auto; max-width: 100%; aspect-ratio: 9 / 16; background: var(--ink); }
+.watch-video:focus-visible { outline: 3px solid var(--yellow); outline-offset: -3px; }
+.vplay {
+  position: absolute; z-index: 2; left: 50%; bottom: 24px; translate: -50% 0; width: 320px; height: 66px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; white-space: nowrap;
+  background: var(--yellow); color: var(--ink); border: 3px solid var(--ink); border-radius: 14px; box-shadow: var(--shadow-sm);
+  font: 700 1.1rem/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.vplay:hover { background: var(--ink); color: var(--cream); border-color: var(--cream); }
+.vplay:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+.vplay[hidden] { display: none; }
+.watch .cta-row { margin-top: 30px; }
+.watch .btn-lg { width: 222px; height: 63px; padding: 0; justify-content: center; font-size: 1.55rem; }
+
+/* Proof tickets: three horizontal cards, 199 px tall; the outer two tilt 1.5deg and their thumbnails stay level. */
+.tickets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: min(28px, 2.4vw); margin-top: clamp(26px, calc(26px + (100vw - 768px) * .0208), 40px); }
+.vt {
+  display: grid; grid-template-columns: 100px minmax(0, 1fr); column-gap: 12px; align-items: start; height: 199px;
+  padding: 13px 12px 10px 9px; background: var(--cream); color: var(--ink); text-decoration: none;
+  border: var(--bw) solid var(--cream); border-radius: 12px; box-shadow: 6px 6px 0 #000; cursor: pointer;
+}
+.tickets li:nth-child(1) .vt { rotate: -1.5deg; }
+.tickets li:nth-child(3) .vt { rotate: 1.5deg; }
+.tickets li:nth-child(1) .vt-thumb { rotate: 1.5deg; }
+.tickets li:nth-child(3) .vt-thumb { rotate: -1.5deg; }
+.vt:hover { box-shadow: 8px 8px 0 #000; }
+.vt:focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
+.vt-thumb { position: relative; display: block; width: 100px; height: 173px; }
+.vt-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; border: 2.5px solid var(--ink); border-radius: 10px; background: var(--ink); }
+.vt-play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 38px; height: 38px; display: grid; place-items: center; padding-left: 3px; font-style: normal; font-size: .85rem; background: var(--yellow); color: var(--ink); border: 2.5px solid var(--ink); border-radius: 50%; }
+.vt-body { display: flex; flex-direction: column; min-width: 0; height: 100%; padding-top: 2px; overflow-wrap: anywhere; }
+.vt-go { margin-top: auto; align-self: flex-start; font-size: .72rem; font-weight: 700; letter-spacing: .1em; background: var(--ink); color: var(--cream); border-radius: 6px; padding: 5px 9px; }
 .big-num { font: 400 clamp(2.4rem, 3.6vw, 3.2rem)/1 var(--font-display); }
-.num-label { font-size: .72rem; font-weight: 700; letter-spacing: .12em; color: var(--blue); margin-top: 2px; }
-.card-t { font-weight: 700; font-size: 1rem; line-height: 1.3; margin-top: 10px; }
-.card-tag { font-size: .8rem; color: var(--ink-2); margin-top: 4px; }
-.footnote { margin-top: 36px; font-size: .95rem; color: var(--cream-dim); font-weight: 500; }
+.num-label { font-size: .72rem; font-weight: 700; letter-spacing: .12em; color: var(--blue); margin-top: 4px; }
+.card-tag { font-size: .8rem; color: var(--ink-2); margin-top: 6px; }
+#proof { padding-bottom: var(--pad-y); }
+#proof .quote-row { margin-bottom: 14px; }
+#proof .lead { margin-top: 12px; font-size: 1.1875rem; line-height: 1.6; }
+@media (prefers-reduced-motion: no-preference) { .vt { transition: box-shadow .15s ease-out; } }
+
+/* The video dialog (the platform <dialog>): opened by a ticket, closed by Escape, the close button or the backdrop. */
+.vdialog { padding: 0; border: 3px solid var(--ink); border-radius: 18px; background: var(--ink); color: var(--cream); overflow: hidden; max-width: 96vw; max-height: 96vh; }
+.vdialog::backdrop { background: rgba(10, 10, 10, .82); }
+.vd-video { display: block; height: min(82vh, 150vw); width: auto; max-width: 92vw; aspect-ratio: 9 / 16; background: var(--ink); }
+.vd-close {
+  position: absolute; z-index: 2; top: 10px; right: 10px; min-height: 44px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  background: var(--yellow); color: var(--ink); border: 2.5px solid var(--ink); border-radius: 10px; padding: 8px 14px; font: 700 .85rem/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase;
+}
+.vd-close span[aria-hidden] { font-size: 1.3rem; line-height: .8; }
+.vd-close:hover { background: var(--ink); color: var(--cream); border-color: var(--cream); }
+.vd-close:focus-visible { outline: 3px solid var(--cream); outline-offset: 3px; }
+.vd-note { position: absolute; left: 10px; bottom: 56px; margin: 0; padding: 5px 9px; font-size: .72rem; background: var(--yellow); color: var(--ink); border-radius: 6px; }
+.vd-note[hidden] { display: none; }
+.footnote { margin-top: 28px; font-size: .95rem; color: var(--cream-dim); font-weight: 500; }
 
 /* How */
 .how-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); gap: clamp(24px, 6vw, 96px); align-items: start; margin-top: 56px; }
@@ -524,10 +569,16 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .hero .kicker { font-size: clamp(1.225rem, calc(1.225rem + (100vw - 950px) * .01333), 1.35rem); }
   .hero .lead { font-size: 1.1rem; }
   .mascot-wave { left: calc(50% + 300px); width: 200px; }
+  #proof .lead { font-size: 1.03rem; }
+  .vframe { margin-top: clamp(28px, calc(28px + (100vw - 950px) * .033), 33px); }
+  .vplay { width: clamp(266px, calc(266px + (100vw - 950px) * .22), 299px); height: clamp(56px, calc(56px + (100vw - 950px) * .0267), 60px); font-size: 1rem; }
 }
 @media (max-width: 900px) {
   .how-grid, .styles-grid, .check-grid, .price-grid { grid-template-columns: 1fr; }
-  .proof-cards { grid-template-columns: 1fr; max-width: 520px; }
+  .vframe { margin-top: 26px; }
+  .watch { padding-top: calc(var(--pad-y) + 20px); }
+  .tickets { margin-right: -10px; }
+  .vplay { width: clamp(199px, calc(199px + (100vw - 390px) * .1429), 266px); height: clamp(40px, calc(40px + (100vw - 390px) * .0423), 56px); bottom: 18px; font-size: .9rem; }
   .phone-tall { margin-top: 24px; }
   .mascot-nerd { right: 10%; }
   .nav { display: none; }
@@ -539,6 +590,13 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .mascot-wave { left: calc(50% + 230px); width: 170px; }
 }
 @media (max-width: 700px) {
+  .vframe { margin-top: 22px; }
+  .vplay { bottom: 10px; font-size: .8rem; letter-spacing: .04em; }
+  .tickets { grid-template-columns: 1fr; gap: 13px; margin-right: 0; }
+  .vt, .tickets li .vt-thumb { rotate: none !important; }
+  .watch .cta-row .btn { width: 222px; }
+  .vt { grid-template-columns: 96px minmax(0, 1fr); }
+  .vt-thumb { width: 96px; height: 171px; }
   .three-steps { grid-template-columns: 1fr; gap: 26px; margin-top: 56px; }
   .arrow-li { display: none; }
   .kit-list { grid-template-columns: 1fr; grid-template-rows: none; grid-auto-flow: row; }
@@ -572,7 +630,6 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .receipt-col { margin-bottom: 40px; }
   .mascot-money { right: -6px; bottom: -44px; width: 100px; }
   .gauge-row { gap: 14px; }
-  .proof-card { padding: 12px; }
   .header-in { min-height: 93px; }
   .brand { min-width: 157px; min-height: 39px; }
   .chip { display: none; }

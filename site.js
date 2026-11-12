@@ -168,40 +168,86 @@
     paintBtn();
   }
 
-  /* ---------- proof reels: click to play with sound, one at a time, pause when scrolled out ---------- */
-  // Without JS the native controls work. Here the controls are swapped for a "Play with sound"
-  // button until the first click. Playback is always user-initiated, so reduced motion needs no gate.
-  const reels = $$('.reel-video');
-  const stopOthers = v => reels.forEach(o => { if (o !== v && !o.paused) o.pause(); });
-  const reelIO = 'IntersectionObserver' in window
-    ? new IntersectionObserver(entries => entries.forEach(e => { if (!e.isIntersecting && !e.target.paused) e.target.pause(); }), { threshold: 0 })
-    : null;
-  reels.forEach(v => {
-    const btn = $('.reel-play', v.parentElement);
-    if (!btn) return;
-    v.removeAttribute('controls');
-    btn.hidden = false;
-    btn.addEventListener('click', () => {
-      stopOthers(v);
-      v.controls = true;
-      btn.hidden = true;
-      v.focus();
+  /* ---------- media: the 60-second watch video and the proof dialog ---------- */
+  // Every playback here is started by a click or tap (the browser's own gesture rules apply, no autoplay
+  // flag), so reduced motion needs no gate. One media plays at a time: starting one pauses the other.
+  const watchVideo = $('#watch-video');
+  const watchBtn = $('#watch-play');
+  const dlg = $('#media-dialog');
+  const dlgVideo = dlg && $('.vd-video', dlg);
+  const stopWatch = () => { if (watchVideo && !watchVideo.paused) watchVideo.pause(); };
+  const stopDialog = () => { if (dlgVideo && !dlgVideo.paused) dlgVideo.pause(); };
+
+  // Watch video: without JS the native controls work. Here they are swapped for a "Play with sound"
+  // button until the first click, and the video pauses when it is scrolled fully out of view.
+  if (watchVideo && watchBtn) {
+    watchVideo.controls = false;
+    watchBtn.hidden = false;
+    watchBtn.addEventListener('click', () => {
+      stopDialog();
+      watchVideo.controls = true;
+      watchBtn.hidden = true;
+      watchVideo.focus({ preventScroll: true });
       let p;
-      try { p = v.play(); } catch { p = Promise.reject(); }
+      try { p = watchVideo.play(); } catch { p = Promise.reject(); }
       if (p) p.catch(err => {
-        v.removeAttribute('controls');
-        btn.hidden = false;
-        // AbortError: a pause (scroll-out, another reel) cut in while the file was still loading.
-        // Show the button again but never pull focus or scroll back to this reel.
+        watchVideo.controls = false;
+        watchBtn.hidden = false;
+        // AbortError: a pause (scroll-out, the dialog) cut in while the file was still loading.
+        // Show the button again but never pull focus or scroll back to the video.
         if (err && err.name === 'AbortError') return;
-        const r = v.getBoundingClientRect();
-        if (r.bottom > 0 && r.top < window.innerHeight) btn.focus({ preventScroll: true });
+        const r = watchVideo.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < window.innerHeight) watchBtn.focus({ preventScroll: true });
       });
     });
-    v.addEventListener('play', () => { stopOthers(v); btn.hidden = true; });
-    v.addEventListener('ended', () => { btn.hidden = false; });
-    if (reelIO) reelIO.observe(v);
-  });
+    watchVideo.addEventListener('play', () => { stopDialog(); watchBtn.hidden = true; });
+    watchVideo.addEventListener('ended', () => { watchBtn.hidden = false; });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(entries => entries.forEach(e => { if (!e.isIntersecting && !e.target.paused) e.target.pause(); }), { threshold: 0 }).observe(watchVideo);
+    }
+  }
+
+  // Proof tickets: a click or tap opens the video large in the platform <dialog> (showModal: focus moves in,
+  // Escape closes, the page behind is inert). Nothing loads before the click; closing stops and unloads the video.
+  // Without JS (or without showModal) a ticket is a plain link to the file.
+  const tickets = $$('.vt');
+  if (dlg && dlgVideo && typeof dlg.showModal === 'function' && tickets.length) {
+    const closeBtn = $('.vd-close', dlg);
+    const note = $('.vd-note', dlg);
+    let opener = null;
+    const open = t => {
+      opener = t;
+      stopWatch();
+      const silent = t.hasAttribute('data-muted');
+      dlgVideo.poster = t.dataset.poster || '';
+      dlgVideo.muted = silent;
+      dlgVideo.setAttribute('aria-label', t.dataset.label || 'Video');
+      if (note) note.hidden = !silent;
+      dlgVideo.src = t.getAttribute('href');
+      dlg.showModal();
+      closeBtn.focus();
+      let p;
+      try { p = dlgVideo.play(); } catch { p = null; }
+      if (p) p.catch(() => {});
+    };
+    tickets.forEach(t => {
+      t.setAttribute('role', 'button');
+      t.setAttribute('aria-haspopup', 'dialog');
+      t.addEventListener('click', e => { e.preventDefault(); open(t); });
+      t.addEventListener('keydown', e => { if (e.key === ' ') { e.preventDefault(); t.click(); } });
+    });
+    closeBtn.addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => {
+      dlgVideo.pause();
+      dlgVideo.removeAttribute('src');
+      dlgVideo.removeAttribute('poster');
+      dlgVideo.load();
+      if (opener && opener.isConnected) opener.focus({ preventScroll: true });
+      opener = null;
+    });
+    dlgVideo.addEventListener('play', stopWatch);
+  }
 
   /* ---------- steps tick when the terminal scrolls into view ---------- */
   const steps = $$('.step');

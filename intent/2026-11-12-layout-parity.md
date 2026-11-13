@@ -52,7 +52,7 @@ Success criteria, all measured by one script (`scripts/parity.mjs`) that loads t
 - Tolerances as in criteria 2, 3 and 5 (±3% section heights, ±1% section tops and page height, ±12 px / ±4% components, ±2% heading size).
 - Video 1 is vertical, but the reference's 60-second frame is landscape. The frame keeps the reference's size, and the vertical video plays centred in it on a brand-coloured background.
 - The proof card 3 thumbnail uses the hero loop, as there are only three owner videos and video 1 is in the 60-second section.
-- No tracker ticket: this repo has no tracker project.
+- Tracker: Plane LPP-2 (created at ship time).
 
 ## Open questions
 None.

@@ -1,4 +1,4 @@
-status: planned (owner approval 2026-11-13, "xử lý luôn") # draft → planned → building → verified
+status: verified (owner approval 2026-11-13, "xử lý luôn") # draft → planned → building → verified
 
 # Plan: layout parity MINORs
 
@@ -77,3 +77,13 @@ counts, each exemption with its reason, and the bite results.
 6. `sdlc-check.py converge` passes.
 
 ## Result
+
+1. PASS at 3f9ef0a (page and scripts identical on the branch): parity exit 0, 363/363 rows at 1440, 1100 and 950, 357/357 at 768 and 390.
+2. PASS on the branch at 55556ab: `node scripts/check.mjs` exit 0.
+3. PASS on the branch at 55556ab: `node scripts/probe-media.mjs` exit 0, 691 PASS, 0 FAIL (545 before), with the new cases.
+4. PASS: the builder's and the reviewer's scratch runs: the old CSS with the new probe fails 21 cases (headings 5, hit test 3, decor 3, step row 1, edge 6 incl. the pause control at 360/320, squeeze 1); the reverted `#styles .wrap` query fails the squeeze rule once ("keeps 51%"); wrapped FAQ answers 14 FAIL; a blown-up badge 13 FAIL.
+5. PASS: preview https://dc-landing-f3hd8kx50-chuu3112s-projects.vercel.app (protected, 302 without the bypass header); `node scripts/deploy-check.mjs <preview> --header "x-vercel-protection-bypass: …"` 31/31 ok. No production deploy (owner 2026-11-13: public only with the real product information and videos).
+6. PASS: `sdlc-check.py converge` (run after this Result was written; see the commit that records it).
+
+Review: reviewer PASS on T1 (3f9ef0a), no BLOCKER or MAJOR. Its MINORs: `ZOOM_KEEP = 0.55` passes with little room (a styles paragraph keeps 59% at 1440 / 24 px) and, as a width share, lets a column of about 16 characters a line pass at a 32 px root; `DECOR_OK` was wider than the intent's note (the note and `CLAUDE.md` now name it); with a classic 17 px scrollbar at exactly a 901 px window the price block stacks 1 px above the 900 px breakpoint. Left open.
+Changes beyond the eight items, forced by the new tests: the price block stacks below 55.25rem of room (container query on `.price-band`); `overflow-wrap: anywhere` on the think h2, the receipt and the kit title; the last swatch's margin; `.report-head` wraps (at 320 px the report heading now wraps at the default root, +19 px); the receipt column is narrower at big roots; the sticker sits 12 px further left above 900 px; the pause control sits at the bottom centre of the centre phone.

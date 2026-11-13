@@ -26,7 +26,7 @@ to `<html data-*>`, prices, the checkout link or the copy.
 
 ## Out of scope
 New content, real product information and the real videos (the owner sends them later); production deploy (the site
-goes public only with that content); the centre tag over the CTA corners at 768 px (the reference does the same).
+goes public only with that content); the centre phone tag over the hero CTA row (CTA, its price pill, the early badge, the fine line and "see how it works") at the default root and every width (the reference does the same; the tag takes no clicks, and the hit test proves every control still answers).
 
 ## Open questions
 None. Owner decision 2026-11-13: "xử lý luôn" (fix the MINORs now); the copy claims are confirmed ("no problem").

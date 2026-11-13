@@ -1,5 +1,5 @@
 ---
-status: shipped (PR, see LPP-3)  # draft → approved → planned → building → verified → shipped (PR #n)
+status: shipped (PR #2)  # draft → approved → planned → building → verified → shipped (PR #n)
 ---
 # Layout parity: the review MINORs
 

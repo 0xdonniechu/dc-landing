@@ -27,6 +27,9 @@ Intent: `intent/2026-11-13-layout-minors.md` (approved). Branch: `layout-minors`
 - allow: `CLAUDE.md` `CONTENT.md` `intent/2026-11-12-layout-parity.plan.md`
 - check: `python3 -c "print('docs')"`
 
+
+## T2 detail
+
 `CLAUDE.md` Verify names the new zoom-check cases; the old plan's Result points its MINORs to this plan and records the
 owner's copy confirmation.
 

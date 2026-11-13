@@ -23,7 +23,16 @@ Intent: `intent/2026-11-13-layout-minors.md` (approved). Branch: `layout-minors`
 - check: `node scripts/probe-media.mjs`
 - check: `systemd-run --user --scope -q -p MemoryMax=4G node scripts/parity.mjs`
 
-The items (review notes from the layout parity run):
+### T2 (main) Docs and Result
+- allow: `CLAUDE.md` `CONTENT.md` `intent/2026-11-12-layout-parity.plan.md`
+- check: `python3 -c "print('docs')"`
+
+`CLAUDE.md` Verify names the new zoom-check cases; the old plan's Result points its MINORs to this plan and records the
+owner's copy confirmation.
+
+## T1 items
+
+Review notes from the layout parity run, for T1:
 1. `--fs-h1: clamp(2.75rem, 6.6vw, 5.94rem)` (site.css:28): the vw term wins above about 1333 px, so the h1 is 95.04 px
    at 1440 at 16, 24 and 32 px roots. Keep every size at the 16 px root; make the h1 grow with the root at every width
    (at 1440 / 32 px root at least 1.5× its 16 px size). `--fs-h2` and `--fs-h2-xl` are px clamps with the same fault:
@@ -54,13 +63,6 @@ The items (review notes from the layout parity run):
 
 For each new test: show it failing on a scratch copy without the fix (outside the tree), then passing. Report the
 counts, each exemption with its reason, and the bite results.
-
-### T2 (main) Docs and Result
-- allow: `CLAUDE.md` `CONTENT.md` `intent/2026-11-12-layout-parity.plan.md`
-- check: `python3 -c "print('docs')"`
-
-`CLAUDE.md` Verify names the new zoom-check cases; the old plan's Result points its MINORs to this plan and records the
-owner's copy confirmation.
 
 ## Proof
 1. `systemd-run --user --scope -q -p MemoryMax=4G node scripts/parity.mjs` exits 0 at all 5 widths.

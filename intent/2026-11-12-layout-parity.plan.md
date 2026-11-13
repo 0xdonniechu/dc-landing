@@ -165,6 +165,6 @@ T8 also takes the T4 review's MINORs: the watch CTA's `min-width` makes it 444 p
 
 Reviews: every task T1–T8 has a reviewer PASS (T1 at 4b920f1 and T2 at 138bc7e were recorded as `none` by the loop hook before coding-playbook PR #72/#73 fixed it; T3–T8 are on record in the run). FAILs fixed: T2 r1, T3 r1–r2, T4 r1, T5 r1, T7 r1.
 
-Open MINOR items from the reviews, left for a follow-up: the h1 still does not grow with text size above about 1333 px (the vw term wins); `ZOOM_EDGE_SKIP` `.hero .ph` also exempts the pause control and tags; the zoom check never opens the FAQ answers and does not cover the badge; the price sticker box and the how step circle at 390 px / 200%; dead rules at site.css (the T8 review's line 723); squeeze threshold of 4 px.
-Owner to confirm the copy: kit items 02, 03, 05, 08 and the styles/self-check lines describe what the kit does ("never touches a file that is not on the list", "nothing ships until all three pass", ...).
+Open MINOR items from the reviews, taken up in `intent/2026-11-13-layout-minors.plan.md` (LPP-3): the h1 still does not grow with text size above about 1333 px (the vw term wins); `ZOOM_EDGE_SKIP` `.hero .ph` also exempts the pause control and tags; the zoom check never opens the FAQ answers and does not cover the badge; the price sticker box and the how step circle at 390 px / 200%; dead rules at site.css (the T8 review's line 723); squeeze threshold of 4 px.
+Owner to confirm the copy: kit items 02, 03, 05, 08 and the styles/self-check lines describe what the kit does ("never touches a file that is not on the list", "nothing ships until all three pass", ...). Confirmed by the owner 2026-11-13 ("no problem"), with the price pill "A plan with Claude Code".
 

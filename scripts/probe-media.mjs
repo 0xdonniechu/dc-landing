@@ -5,7 +5,8 @@
 // Real pointer clicks only: each click goes to the element's centre with page.mouse.click, after asserting
 // that elementFromPoint there is the element (or inside it). There is no autoplay-bypass flag, so the
 // browser's own gesture rules apply. Desktop (1440) and mobile (390) are covered.
-// Also a generic text-zoom check (root font size 24 and 32 px) over the blocks in ZOOM_BLOCKS; `--zoom-only` runs just that.
+// Also a generic text-zoom check (root font size 24 and 32 px) over the blocks in ZOOM_BLOCKS; `--zoom-only` runs just that. It also holds
+// the heading growth, hero hit test, decorative box, how step row and squeezed column cases (see the "text zoom" sections below).
 // Replaces the gitignored .check/probe-video.mjs and .check/probe-reels.mjs.
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -14,7 +15,7 @@ import { extname, join, normalize, resolve } from 'node:path';
 import { homedir } from 'node:os';
 
 // Blocks (the data-p names) the text-zoom check covers. Each layout task adds its own blocks here.
-const ZOOM_BLOCKS = ['header', 'hero', 'ticker', 'watch', 'proof', 'night', 'how', 'styles', 'check', 'inside', 'price', 'faq', 'final', 'footer'];
+const ZOOM_BLOCKS = ['header', 'hero', 'ticker', 'watch', 'proof', 'night', 'how', 'styles', 'check', 'inside', 'price', 'faq', 'final', 'footer', 'badge'];
 // Text that hangs outside its data-p box on purpose (the phone labels sit above and beside the phone): checked against its block instead.
 const ZOOM_HANG = ['.hero .ph .tag'];
 // Cropped by design: the phone mock-ups (aria-hidden, they run off the page edge at big text sizes, the centre one is the video's
@@ -22,9 +23,26 @@ const ZOOM_HANG = ['.hero .ph .tag'];
 // at the bar's edge while it types; making it wrap would change the hero's prompt height, which T3's parity rows pin).
 const ZOOM_SKIP = ['.hero .ph[aria-hidden="true"]', '.hero .ph .bar', '.hero .prompt-text'];
 // Boxes the edge check leaves out, each with its reason: the ticker is a band 110% of the page wide on purpose (the parity row pins its
-// box; `main` clips it, and its text runs in a moving track); the hero's phone mock-ups (see ZOOM_SKIP) and its presenter image, which
-// the reference's own boxes put partly past the page edge at 950, 768 and 390 px (parity rows pin them).
-const ZOOM_EDGE_SKIP = ['[data-p="ticker"]', '.hero .ph', '.hero .mascot-wave'];
+// box; `main` clips it, and its text runs in a moving track); the frames of the hero's phone mock-ups (the .screen of each phone and
+// everything in it: see ZOOM_SKIP) and its presenter image, which the reference's own boxes put partly past the page edge at 950, 768 and
+// 390 px (parity rows pin them). ZOOM_EDGE_SELF are boxes left out themselves but not their children: the phone boxes .ph and .phone, so
+// the centre phone's tag and its pause control (.video-ctl) are still tested.
+const ZOOM_EDGE_SKIP = ['[data-p="ticker"]', '.hero .screen', '.hero .mascot-wave'];
+const ZOOM_EDGE_SELF = ['.hero .ph', '.hero .phone'];
+// The phone widths where only the edge test runs (the text tests stay at the 5 parity widths).
+const EDGE_ONLY_WIDTHS = [360, 320];
+// A text column of prose (30+ characters on 3+ lines) must keep this share of the width it has at the 16 px root when the text grows:
+// the page is as wide as before, so a column that loses more has been squeezed by a box that grew with the text (the T6 styles squeeze
+// left 51% of its width at 950 px with a 32 px root; the stacked layout keeps it whole).
+const ZOOM_KEEP = 0.55;
+// Decorative boxes (a sticker, the hero mascot, the phone tags) must not cover a pill, a button or a link of their block.
+const DECOR = ['.mascot-money', '.hero [data-p="hero.mascot"]', '.hero .tag'];
+// Pairs (decor selector, target selector, reason) left out of that test at the 16 px root only (with a bigger root the hero gives back the
+// overlap and the pair is tested).
+const DECOR_OK = [
+  ['.hero .phone-c .tag', '[data-p="hero.cta"], [data-p="hero.cta"] .pill-price, [data-p="hero.launch"], .hero .fine a',
+    'the reference puts the centre phone 4.25rem up under the CTA row and the "see how it works" line at 701-1100 px (--fan-trim, pinned by the parity rows), and its tag sits on the phone top edge'],
+];
 const ZOOMS = (process.env.ZOOMS || '24,32').split(',').map(Number); // ZOOMS=16 looks at the default size
 const ZOOM_ONLY = process.argv.includes('--zoom-only');
 
@@ -106,6 +124,16 @@ const newPage = async (ctx, errs, reqs) => {
   if (reqs) pg.on('request', r => { const m = /\/assets\/video\/([^?]*\.(?:mp4|webm))/.exec(r.url()); if (m) reqs.push(m[1]); });
   return pg;
 };
+
+// The widest state of the page for the zoom cases: early-price pieces shown, every FAQ answer open (`name` removed first, or the
+// browser would close the others), the floating badge in, the hero pause control shown (site.js shows it only while motion is welcome).
+const prep = pg => pg.evaluate(() => {
+  document.querySelectorAll('[data-early]').forEach(e => { e.hidden = false; });
+  document.querySelectorAll('details').forEach(d => { d.removeAttribute('name'); d.open = true; });
+  document.querySelector('#float-badge')?.classList.add('show');
+  const c = document.querySelector('#hero-video-ctl'); if (c) c.hidden = false;
+  void document.body.offsetHeight;
+});
 
 const hero = pg => pg.evaluate(() => {
   const v = document.querySelector('#hero-video'), c = document.querySelector('#hero-video-ctl');
@@ -368,21 +396,20 @@ for (const width of ZOOM_ONLY ? [] : [1440, 950, 768, 390]) {
 /* ---- text zoom, generic: at a root font size of 24 and 32 px no text may be clipped or spill out of its box. For every
    element under a data-p block that holds text itself: if it clips (overflow other than visible) its content must fit
    (scrollWidth/Height <= client + 1), and the text's own range rect must lie inside the box of its nearest data-p
-   ancestor (itself included) and inside every ancestor that clips, 1 px slack. Text inside ZOOM_SKIP parts (decoration) is skipped. Early-price pieces are shown (the widest the page gets) and motion is
-   reduced so the ticker and the tilts hold still. One line per width x zoom x block. ---- */
-for (const width of [1440, 1100, 950, 768, 390]) {
+   ancestor (itself included) and inside every ancestor that clips, 1 px slack. Text inside ZOOM_SKIP parts (decoration) is skipped. The page is in its widest state (see prep) and motion is
+   reduced so the ticker and the tilts hold still. One line per width x zoom x block. At 360 and 320 px (EDGE_ONLY_WIDTHS) only the edge test runs. ---- */
+for (const width of [1440, 1100, 950, 768, 390, ...EDGE_ONLY_WIDTHS]) {
   for (const px of ZOOMS) {
     const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     const pg = await newPage(ctx, []);
     await pg.goto(url, { waitUntil: 'networkidle' });
     await pg.evaluate(() => document.fonts.ready);
-    const res = await pg.evaluate(([px, blocks, hang, skip, edgeSkip]) => {
+    await prep(pg);
+    const edgeOnly = EDGE_ONLY_WIDTHS.includes(width);
+    const res = await pg.evaluate(([px, blocks, hang, skip, edgeSkip, edgeSelf, edgeOnly]) => {
       document.documentElement.style.fontSize = `${px}px`;
-      document.querySelectorAll('[data-early]').forEach(e => { e.hidden = false; });
       void document.body.offsetHeight;
-      // The answer of a closed <details> is not shown (its layout can still report a box): leave it out until it is open.
-      const closedPanel = el => { const d = el.closest('details:not([open])'); return !!d && !el.closest('summary'); };
-      const out = Object.fromEntries(blocks.map(b => [b, { elements: 0, bad: [] }]));
+      const out = Object.fromEntries(blocks.map(b => [b, { elements: 0, bad: [], edge: [] }]));
       const name = el => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''}`;
       for (const el of document.querySelectorAll('body *')) {
         const host = el.closest('[data-p]');
@@ -391,7 +418,7 @@ for (const width of [1440, 1100, 950, 768, 390]) {
         if (!out[block]) continue;
         const own = [...el.childNodes].filter(n => n.nodeType === 3 && n.nodeValue.trim());
         if (!own.length) continue;
-        if (el.closest(skip) || closedPanel(el)) continue;
+        if (el.closest(skip) || edgeOnly) continue;
         const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
         if (el.offsetWidth <= 1 || el.offsetHeight <= 1 || eb.width <= 0 || cs.visibility === 'hidden') continue; // hidden, or a screen-reader-only clip
         const rec = out[block];
@@ -434,7 +461,7 @@ for (const width of [1440, 1100, 950, 768, 390]) {
         const host = el.closest('[data-p]');
         if (!host) continue;
         const block = host.getAttribute('data-p').split('.')[0];
-        if (!out[block] || el.closest(skip) || el.closest(edgeSkip) || closedPanel(el)) continue;
+        if (!out[block] || el.closest(skip) || el.closest(edgeSkip) || el.matches(edgeSelf)) continue;
         const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
         if (el.offsetWidth <= 1 || el.offsetHeight <= 1 || eb.width <= 0 || cs.visibility === 'hidden' || cs.display === 'contents') continue;
         if (eb.left >= -1 && eb.right <= pageW + 1) continue;
@@ -443,18 +470,22 @@ for (const width of [1440, 1100, 950, 768, 390]) {
           const ac = getComputedStyle(a), ab = a.getBoundingClientRect();
           if (ac.overflowX !== 'visible' && ab.width < pageW - 2 && ab.left >= -1 && ab.right <= pageW + 1) cropped = true;
         }
-        if (!cropped) out[block].bad.push(`${name(el)} runs past the page edge: ${Math.round(eb.left)}..${Math.round(eb.right)} of ${pageW}`);
+        if (!cropped) out[block].edge.push(`${name(el)} runs past the page edge: ${Math.round(eb.left)}..${Math.round(eb.right)} of ${pageW}`);
       }
       return out;
-    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(','), ZOOM_EDGE_SKIP.join(',') || '[data-none]']);
-    for (const b of ZOOM_BLOCKS) ok(`text zoom ${px}px root at ${width}: ${b} text is not clipped or spilling`, res[b].bad.length === 0 && res[b].elements > 0, { elements: res[b].elements, bad: res[b].bad.slice(0, 6) });
+    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(','), ZOOM_EDGE_SKIP.join(',') || '[data-none]', ZOOM_EDGE_SELF.join(',') || '[data-none]', edgeOnly]);
+    for (const b of ZOOM_BLOCKS) {
+      if (edgeOnly) ok(`text zoom ${px}px root at ${width}: ${b} has no box past the page edge`, res[b].edge.length === 0, { edge: res[b].edge.slice(0, 6) });
+      else ok(`text zoom ${px}px root at ${width}: ${b} text is not clipped or spilling`, res[b].bad.length === 0 && res[b].edge.length === 0 && res[b].elements > 0, { elements: res[b].elements, bad: [...res[b].bad, ...res[b].edge].slice(0, 6) });
+    }
     await ctx.close();
   }
 }
 
 /* ---- text zoom, readable: the generic check above tests text against its data-p host; this one tests text against other text.
    (1) No text element that holds words is squeezed to near-zero width (boxes of any size count; display: none and the
-   screen-reader-only clip are not "squeezed"). (2) No two text elements of one block have overlapping line rects (1 px slack;
+   screen-reader-only clip are not "squeezed"), and no column of prose (30+ characters on 3+ lines) keeps less than ZOOM_KEEP of the
+   width it has at the 16 px root. (2) No two text elements of one block have overlapping line rects (1 px slack;
    an element and its ancestor or descendant are not a pair; ZOOM_SKIP and ZOOM_HANG elements are left out). Line rects are
    trimmed by the half-leading like above, so a tight line-height does not count as an overlap. ---- */
 for (const width of [1440, 1100, 950, 768, 390]) {
@@ -463,9 +494,14 @@ for (const width of [1440, 1100, 950, 768, 390]) {
     const pg = await newPage(ctx, []);
     await pg.goto(url, { waitUntil: 'networkidle' });
     await pg.evaluate(() => document.fonts.ready);
-    const res = await pg.evaluate(([px, blocks, hang, skip]) => {
+    await prep(pg);
+    const res = await pg.evaluate(([px, blocks, hang, skip, keep]) => {
+      const colW = el => { const c = getComputedStyle(el); return el.getBoundingClientRect().width - parseFloat(c.paddingLeft) - parseFloat(c.paddingRight); };
+      const base = new Map(); // the column widths at the 16 px root, for the elements that hold words
+      document.documentElement.style.fontSize = '16px';
+      void document.body.offsetHeight;
+      for (const el of document.querySelectorAll('body *')) if ([...el.childNodes].some(n => n.nodeType === 3 && n.nodeValue.trim()) && el.getClientRects().length) base.set(el, colW(el));
       document.documentElement.style.fontSize = `${px}px`;
-      document.querySelectorAll('[data-early]').forEach(e => { e.hidden = false; });
       void document.body.offsetHeight;
       const out = Object.fromEntries(blocks.map(b => [b, { elements: 0, squeezed: [], overlaps: [] }]));
       const name = el => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''}`;
@@ -475,7 +511,6 @@ for (const width of [1440, 1100, 950, 768, 390]) {
         if (!host) continue;
         const block = host.getAttribute('data-p').split('.')[0];
         if (!out[block] || el.closest(skip) || el.matches(hang)) continue;
-        if (el.closest('details:not([open])') && !el.closest('summary')) continue; // a closed <details> answer is not shown
         const own = [...el.childNodes].filter(n => n.nodeType === 3 && n.nodeValue.trim());
         if (!own.length || !el.getClientRects().length) continue; // no text of its own, or display: none
         const cs = getComputedStyle(el), eb = el.getBoundingClientRect();
@@ -490,6 +525,11 @@ for (const width of [1440, 1100, 950, 768, 390]) {
             const lead = Number.isFinite(lh) ? Math.max(0, (t.height - lh) / 2) : 0;
             lines.push({ l: t.left, t: t.top + lead, r: t.right, b: t.bottom - lead });
           }
+        }
+        const chars = own.reduce((n, t) => n + t.nodeValue.trim().length, 0), rows = new Set(lines.map(l => Math.round(l.t / 3))).size;
+        if (chars >= 30 && rows >= 3 && base.get(el) > 0) {
+          const kept = colW(el) / base.get(el);
+          if (kept < keep) out[block].squeezed.push(`${name(el)} keeps ${Math.round(kept * 100)}% of its ${Math.round(base.get(el))}px column (${Math.round(colW(el))}px, ${rows} lines)`);
         }
         (items[block] ||= []).push({ el, lines });
       }
@@ -506,13 +546,141 @@ for (const width of [1440, 1100, 950, 768, 390]) {
         }
       }
       return out;
-    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(',')]);
+    }, [px, ZOOM_BLOCKS, ZOOM_HANG.join(','), ZOOM_SKIP.join(','), ZOOM_KEEP]);
     for (const b of ZOOM_BLOCKS) {
       ok(`text zoom ${px}px root at ${width}: ${b} has no squeezed text`, res[b].squeezed.length === 0 && res[b].elements > 0, { elements: res[b].elements, squeezed: res[b].squeezed.slice(0, 6) });
       ok(`text zoom ${px}px root at ${width}: ${b} text does not overlap other text`, res[b].overlaps.length === 0, { overlaps: res[b].overlaps });
     }
     await ctx.close();
   }
+}
+
+/* ---- text zoom, headings: every heading grows with the root at every width. The size at a 32 px root is at least 1.5 times the size at
+   the 16 px root (a px or vw term in a clamp() stops it growing; a rem term or a `(1rem - 16px)` term keeps it growing). ---- */
+for (const width of [1440, 1100, 950, 768, 390]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+  const pg = await newPage(ctx, []);
+  await pg.goto(url, { waitUntil: 'networkidle' });
+  await pg.evaluate(() => document.fonts.ready);
+  await prep(pg);
+  const res = await pg.evaluate(() => {
+    const hs = [...document.querySelectorAll('h1, h2, h3')].filter(h => h.getClientRects().length);
+    const at = px => { document.documentElement.style.fontSize = `${px}px`; void document.body.offsetHeight; return hs.map(h => parseFloat(getComputedStyle(h).fontSize)); };
+    const a = at(16), b = at(32);
+    return hs.map((h, i) => ({ n: `${h.tagName.toLowerCase()}${h.className ? '.' + h.className.trim().split(/\s+/).join('.') : ''}`, at16: +a[i].toFixed(1), at32: +b[i].toFixed(1), x: +(b[i] / a[i]).toFixed(2) }));
+  });
+  const bad = res.filter(r => r.x < 1.5);
+  ok(`headings at ${width}: each of ${res.length} grows at least 1.5x from a 16 to a 32 px root`, res.length >= 8 && bad.length === 0, { bad: bad.slice(0, 6) });
+  await ctx.close();
+}
+
+/* ---- text zoom, hero hit test: every link and button of the hero answers a pointer at 10%, 50% and 90% of its width (vertical centre; one
+   set of points per line of a wrapped link), at the 5 widths and at 701 and 900 px (the range where the phone reaches up under the
+   text at the default root), roots 16, 24 and 32. The pause control is shown. ---- */
+for (const width of [1440, 1100, 950, 768, 390, 701, 900]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+  const pg = await newPage(ctx, []);
+  await pg.goto(url, { waitUntil: 'networkidle' });
+  await pg.evaluate(() => document.fonts.ready);
+  await prep(pg);
+  for (const px of [16, 24, 32]) {
+    const res = await pg.evaluate(px => {
+      document.documentElement.style.fontSize = `${px}px`;
+      void document.body.offsetHeight;
+      const name = el => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''}`;
+      const bad = []; let points = 0, els = 0;
+      for (const el of document.querySelectorAll('.hero a, .hero button')) {
+        if (!el.getClientRects().length) continue;
+        els++;
+        el.scrollIntoView({ block: 'center', behavior: 'instant' });
+        for (const r of el.getClientRects()) {
+          if (r.width < 1 || r.height < 1) continue;
+          for (const f of [0.1, 0.5, 0.9]) {
+            const x = r.left + r.width * f, y = r.top + r.height / 2, h = document.elementFromPoint(x, y);
+            points++;
+            if (!(h && (h === el || el.contains(h)))) bad.push(`${name(el)} at ${f * 100}% (${Math.round(x)},${Math.round(y)}) gets ${h ? name(h) : 'nothing (outside the page)'}`);
+          }
+        }
+      }
+      return { els, points, bad };
+    }, px);
+    ok(`hero hit test at ${width}, ${px}px root: ${res.els} links and buttons answer at 10%, 50% and 90%`, res.els >= 3 && res.bad.length === 0, { points: res.points, bad: res.bad.slice(0, 6) });
+  }
+  await ctx.close();
+}
+
+/* ---- text zoom, decorative boxes: a sticker, the hero mascot or a phone tag must not cover a pill, a button or a link of its block (their
+   visible boxes, each cut to the boxes that clip it, intersect by more than 2 px both ways). Roots 16, 24 and 32. ---- */
+for (const width of [1440, 1100, 950, 768, 390]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+  const pg = await newPage(ctx, []);
+  await pg.goto(url, { waitUntil: 'networkidle' });
+  await pg.evaluate(() => document.fonts.ready);
+  await prep(pg);
+  for (const px of [16, 24, 32]) {
+    const res = await pg.evaluate(([px, decor, ok]) => {
+      document.documentElement.style.fontSize = `${px}px`;
+      void document.body.offsetHeight;
+      const name = el => `${el.tagName.toLowerCase()}${typeof el.className === 'string' && el.className ? '.' + el.className.trim().split(/\s+/).join('.') : ''}`;
+      const visible = el => { // the box cut to every ancestor that clips
+        const b = el.getBoundingClientRect(), r = { l: b.left, t: b.top, r: b.right, b: b.bottom };
+        for (let a = el.parentElement; a && a !== document.documentElement; a = a.parentElement) {
+          const c = getComputedStyle(a), ab = a.getBoundingClientRect();
+          if (c.overflowX !== 'visible') { r.l = Math.max(r.l, ab.left); r.r = Math.min(r.r, ab.right); }
+          if (c.overflowY !== 'visible') { r.t = Math.max(r.t, ab.top); r.b = Math.min(r.b, ab.bottom); }
+        }
+        return r;
+      };
+      const bad = []; let boxes = 0, targets = 0;
+      for (const el of document.querySelectorAll(decor.join(','))) {
+        const dv = visible(el);
+        if (dv.r - dv.l <= 0 || dv.b - dv.t <= 0 || !el.getClientRects().length) continue;
+        const host = el.closest('[data-p]'), root = host && document.querySelector(`[data-p="${host.getAttribute('data-p').split('.')[0]}"]`);
+        if (!root) continue;
+        boxes++;
+        for (const t of new Set(root.querySelectorAll('a, button, .btn, .pill-link, .pill-price, .run-chip, .badge-early, .chip-o, .yellow-pill, .req li, .vt-go'))) {
+          if (t === el || el.contains(t) || t.contains(el) || !t.getClientRects().length) continue;
+          if (px === 16 && ok.some(([d, tg]) => el.matches(d) && t.matches(tg))) continue;
+          const tv = visible(t);
+          targets++;
+          const w = Math.min(dv.r, tv.r) - Math.max(dv.l, tv.l), h = Math.min(dv.b, tv.b) - Math.max(dv.t, tv.t);
+          if (w > 2 && h > 2) bad.push(`${name(el)} covers ${name(t)} by ${Math.round(w)}x${Math.round(h)}`);
+        }
+      }
+      return { boxes, targets, bad };
+    }, [px, DECOR, DECOR_OK.map(([d, t]) => [d, t])]);
+    ok(`decorative boxes at ${width}, ${px}px root: ${res.boxes} boxes cover no pill, button or link`, res.boxes >= 2 && res.targets > 0 && res.bad.length === 0, { targets: res.targets, bad: res.bad.slice(0, 6) });
+  }
+  await ctx.close();
+}
+
+/* ---- text zoom, how steps: in every step of the terminal the check circle and the first line of its label share a row. ---- */
+for (const width of [1440, 1100, 950, 768, 390]) {
+  const ctx = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+  const pg = await newPage(ctx, []);
+  await pg.goto(url, { waitUntil: 'networkidle' });
+  await pg.evaluate(() => document.fonts.ready);
+  await prep(pg);
+  for (const px of [16, 24, 32]) {
+    const res = await pg.evaluate(px => {
+      document.documentElement.style.fontSize = `${px}px`;
+      void document.body.offsetHeight;
+      const bad = []; let steps = 0;
+      for (const st of document.querySelectorAll('.step')) {
+        const box = st.querySelector('.box'), label = st.querySelector('.step-t');
+        if (!box || !label || !label.getClientRects().length) continue;
+        steps++;
+        const r = document.createRange(); r.selectNodeContents(label);
+        const line = [...r.getClientRects()].find(t => t.width > 0), b = box.getBoundingClientRect();
+        if (!line) continue;
+        const sameRow = Math.abs((b.top + b.bottom) / 2 - (line.top + line.bottom) / 2) <= Math.max(b.height, line.height) / 2, left = b.right <= line.left + 1;
+        if (!sameRow || !left) bad.push(`${label.textContent.trim()}: circle at ${Math.round(b.left)},${Math.round(b.top)}, first line at ${Math.round(line.left)},${Math.round(line.top)}`);
+      }
+      return { steps, bad };
+    }, px);
+    ok(`how steps at ${width}, ${px}px root: circle and first label line share a row in ${res.steps} steps`, res.steps >= 6 && res.bad.length === 0, { bad: res.bad.slice(0, 6) });
+  }
+  await ctx.close();
 }
 
 await browser.close();

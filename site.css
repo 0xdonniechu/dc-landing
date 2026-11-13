@@ -25,9 +25,12 @@
   --focus: var(--ink);
 
   --fs-body: clamp(1rem, .9rem + .35vw, 1.1875rem);
-  --fs-h1: clamp(2.75rem, 6.6vw, 5.94rem);
-  --fs-h2: clamp(32px, 4.4vw, 58px);
-  --fs-h2-xl: clamp(40px, 6vw, 84px);
+  /* Headings: the rem ends grow with the root; the vw term carries `(1rem - 16px)` times a number, which is 0 at the default 16 px root
+     (every size is the reference's px there) and adds that many px per px of root growth, so a vw term cannot hold a heading at its
+     default size when the user's text size is bigger. */
+  --fs-h1: clamp(2.75rem, calc(6.6vw + (1rem - 16px) * 3.5), 5.94rem);
+  --fs-h2: clamp(2rem, calc(4.4vw + (1rem - 16px) * 2), 3.625rem);
+  --fs-h2-xl: clamp(2.5rem, calc(6vw + (1rem - 16px) * 3), 5.25rem);
   --fs-h3: clamp(1.3rem, 1.8vw, 1.7rem);
   color-scheme: light;
 }
@@ -235,8 +238,11 @@ section[id], div[id^="myth"] { scroll-margin-top: 92px; }
 .phone-c .screen { height: auto; }
 .hero-video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; background: var(--paper); }
 /* The pause chip takes clicks and taps (WCAG 2.2.2) although .fan-wrap is click-through. */
+/* At the bottom of the centre phone, in the part the hero shows (the hero clips 4.375rem of the phone): at the top it covered the
+   "see how it works" link where the phone reaches up under the text (701-1100 px), and at its right edge it ran off the page at a big
+   text size. Centred on the phone, which is centred on the page, it stays inside at every width. */
 .video-ctl {
-  position: absolute; z-index: 4; top: 14px; right: 20px; min-height: 24px; pointer-events: auto; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
+  position: absolute; z-index: 4; bottom: 6.25rem; left: 50%; translate: -50% 0; min-height: 24px; pointer-events: auto; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;
   background: var(--yellow); color: var(--ink); border: 2px solid var(--ink); border-radius: 8px; padding: 3px 8px;
   font: 700 .62rem/1 var(--font-mono); letter-spacing: .08em; box-shadow: 2px 2px 0 var(--ink);
 }
@@ -290,7 +296,7 @@ main { overflow-x: clip; }
 .think-copy { position: relative; z-index: 2; width: calc(100% - min(18.75rem, 35vw) - 1.875rem); }
 .think .kicker.yellow-text { color: var(--yellow); }
 .think .kicker { position: absolute; top: 0; left: 0; translate: 0 -100%; rotate: -3deg; font-size: 1.7rem; line-height: 1; margin: 0; }
-.think .h2 { font-size: var(--fs-h2-xl); line-height: 1.06; letter-spacing: .09em; }
+.think .h2 { font-size: var(--fs-h2-xl); line-height: 1.06; letter-spacing: .09em; overflow-wrap: anywhere; } /* a big text size makes the word "THINKING" wider than a phone */
 .think .h2 .hl { padding-inline: .3em; margin-inline: .1em; }
 .idx { display: flex; flex-wrap: wrap; gap: .625rem; margin: 1.375rem 0 calc(var(--pad-y) - 6px); }
 .pill-link { font: 700 .75rem/1 var(--font-mono); letter-spacing: .04em; text-decoration: none; border: 2px solid rgba(247, 245, 240, .5); border-radius: 999px; padding: .75rem .875rem .6875rem; color: var(--cream); }
@@ -393,9 +399,11 @@ main { overflow-x: clip; }
 .term-body { padding: 1.375rem 1.5rem 1rem; font-size: .9375rem; line-height: 1.6; }
 .term-prompt { padding-bottom: 1rem; border-bottom: 1px solid rgba(247, 245, 240, .12); margin-bottom: .5rem; }
 .step { display: flex; flex-wrap: wrap; align-items: center; gap: 0 .875rem; padding: .34375rem 0; color: rgba(247, 245, 240, .6); }
-.step .box { flex: none; width: 1.25rem; height: 1.25rem; border: 2px solid rgba(247, 245, 240, .5); border-radius: 50%; display: grid; place-items: center; }
+.step .box { flex: none; align-self: flex-start; margin-top: calc((1.6em - 1.25rem) / 2); width: 1.25rem; height: 1.25rem; border: 2px solid rgba(247, 245, 240, .5); border-radius: 50%; display: grid; place-items: center; }
 .step .box::after { content: "\2713"; font-size: .7rem; font-weight: 700; color: var(--ink); opacity: 0; }
-.step-t { flex: 1 1 auto; min-width: 0; }
+/* The label takes the room beside the circle (a basis of 0, so it never wraps below it) and at least 10em of its own size, or all the room
+   there is; the hint (.step-m) goes below it when the row is too narrow for both. */
+.step-t { flex: 1 1 0; min-width: min(10em, calc(100% - 2.125rem)); }
 .step-m { margin-left: auto; font-size: .8125rem; opacity: .85; text-align: right; }
 .step.done { color: var(--cream); }
 .step.done .box { background: var(--yellow); border-color: var(--yellow); }
@@ -451,7 +459,8 @@ main { overflow-x: clip; }
 .chip-o { border: 2px solid var(--ink); border-radius: 999px; padding: 3px 13px; font-size: .9rem; line-height: 1.5; font-weight: 500; background: var(--paper); }
 .swatch-row { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 36px; padding-top: 22px; border-top: 2px dashed rgba(20, 20, 20, .3); }
 .swatches { display: flex; flex: none; align-items: center; width: min(11.25rem, 100%); height: 3.875rem; }
-.swatches i { display: block; flex: none; width: 3rem; height: 3.625rem; border: 2.5px solid var(--ink); border-radius: 6px; background: var(--c); rotate: var(--r); margin-right: -.9375rem; box-shadow: 2px 2px 0 var(--ink); }
+.swatches i { display: block; flex: 0 1 3rem; min-width: 0; width: 3rem; height: 3.625rem; border: 2.5px solid var(--ink); border-radius: 6px; background: var(--c); rotate: var(--r); margin-right: -.9375rem; box-shadow: 2px 2px 0 var(--ink); }
+.swatches i:last-child { margin-right: 0; } /* its negative margin would push the last box past the row */
 .swatches i.rainbow { background: conic-gradient(from 90deg, #e8452c, #f2c230, #2fa84f, #1f56d6, #b8359f, #e8452c); }
 .swatch-row p { flex: 1 1 12rem; font-size: .96875rem; line-height: 1.6; }
 .preview { position: relative; display: flex; flex-direction: column; background: var(--ink); border-radius: 2.25rem; padding: .4375rem; box-shadow: var(--shadow); width: min(16.875rem, 100%); min-height: 31.125rem; justify-self: center; }
@@ -499,7 +508,7 @@ main { overflow-x: clip; }
 .report-wrap { position: relative; padding-bottom: 7.6875rem; }
 .report { position: relative; background: var(--paper); border: var(--bw) solid var(--ink); border-radius: 16px 6px 16px 10px; padding: 1.375rem 1.375rem 1.125rem; rotate: 1deg; box-shadow: var(--shadow); }
 .tape { position: absolute; top: -18px; left: 12%; width: 100px; height: 30px; background: var(--yellow); opacity: .92; rotate: -3deg; box-shadow: 0 1px 2px rgba(0, 0, 0, .2); }
-.report-head { display: flex; align-items: center; gap: 12px; min-height: 2.125rem; font-size: .8125rem; color: var(--ink-2); padding-bottom: .75rem; border-bottom: 1.5px solid rgba(20, 20, 20, .2); }
+.report-head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 2.125rem; font-size: .8125rem; color: var(--ink-2); padding-bottom: .75rem; border-bottom: 1.5px solid rgba(20, 20, 20, .2); }
 .dots { display: flex; gap: 5px; }
 .dots i { width: 9px; height: 9px; border-radius: 50%; background: #ff5f57; }
 .dots i:nth-child(2) { background: var(--yellow); } .dots i:nth-child(3) { background: #28c840; }
@@ -530,6 +539,7 @@ ol.kit-list > .kit-item { display: flex; gap: 1rem; padding: 1rem 0; border-bott
 .kit-n { font: 400 2.5rem/1 var(--font-display); color: var(--blue); flex: none; width: 2.875rem; }
 .kit-item > div { flex: 1; min-width: 0; }
 .kit-t { display: flex; align-items: center; gap: .625rem; font: 400 clamp(1.375rem, calc(1.375rem + (100vw - 59.375rem) * .014), 1.6875rem)/1.1 var(--font-display); text-transform: uppercase; }
+.kit-t span { min-width: 0; overflow-wrap: anywhere; }
 .kit-t::after { content: ""; flex: 1; border-bottom: 3px dotted rgba(20, 20, 20, .35); translate: 0 4px; }
 .kit-item p:last-child { color: var(--ink-2); font-size: .96875rem; margin-top: .25rem; line-height: 1.5; }
 
@@ -537,12 +547,12 @@ ol.kit-list > .kit-item { display: flex; gap: 1rem; padding: 1rem 0; border-bott
    the buy side (h2, lead, button, small line, three requirement pills) at its right, centred on each other; one column,
    centred, from 900 px down. Sizes in rem so a bigger text size grows the boxes. The pills are as wide as their text up
    to 1100 px (they fit one row at 1440), and at least 14.5rem wide from there down, where they wrap. */
-.price-band { padding-block: clamp(3.25rem, 6.5vw, 5.5rem); }
+.price-band { padding-block: clamp(3.25rem, 6.5vw, 5.5rem); container-type: inline-size; }
 .price-grid { display: grid; grid-template-columns: 19.1rem minmax(0, 1fr); column-gap: min(6vw, 5.25rem); row-gap: 6vw; align-items: center; }
 .receipt-col { position: relative; width: 100%; min-width: 0; justify-self: center; }
 .receipt-wrap { rotate: -1.2deg; filter: drop-shadow(7px 5px 0 var(--ink)); }
 .receipt {
-  --z: 8px;
+  --z: 8px; overflow-wrap: anywhere; /* a long word ("subscription") at a big text size breaks instead of running out of the receipt */
   background: #fff; padding: 1.875rem 1.625rem 1.625rem; font-size: .90625rem; line-height: 1.55;
   -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--z)) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--z) * 2) var(--z) repeat-x;
           mask: linear-gradient(#000 0 0) top / 100% calc(100% - var(--z)) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--z) * 2) var(--z) repeat-x;
@@ -562,7 +572,7 @@ ol.kit-list > .kit-item { display: flex; gap: 1rem; padding: 1rem 0; border-bott
 .r-pay { font-size: .76rem; }
 .barcode { height: 2.5rem; margin-top: .75rem; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 17px, var(--ink) 17px 19px, transparent 19px 20px); }
 .r-thanks { text-align: center; font-size: .72rem; color: var(--ink-2); margin-top: .5rem; }
-.mascot-money { right: max(-3.5rem, -56px); bottom: max(-3.5rem, -56px); width: min(8.5rem, 136px); rotate: 6deg; } /* a sticker: its size and offset stay fixed when the text grows, so it stays inside the page and off the pills */
+.mascot-money { right: -44px; bottom: max(-3.5rem, -56px); width: min(8.5rem, 136px); rotate: 6deg; } /* a sticker: its size and offset stay fixed when the text grows, so it stays inside the page; 44 px hangs out, less than the 57 px gap to the pills at 950 px */
 .price-copy { min-width: 0; }
 .price-copy .h2 { margin-bottom: 1rem; line-height: 1.06; }
 .inside-band .h2 { line-height: 1.06; }
@@ -577,10 +587,22 @@ ol.kit-list > .kit-item { display: flex; gap: 1rem; padding: 1rem 0; border-bott
 }
 @media (max-width: 900px) {
   .br-d { display: none; }
-  .receipt-col { width: min(23.75rem, 100%); }
+  .receipt-col { width: min(23.75rem, calc(100% - (1rem - 16px) * 3)); } /* the turned receipt is tall at a big text size: its corners need a few px */
   .price-copy { text-align: center; }
   .price-copy .lead { margin-inline: auto; }
   .req { justify-content: center; }
+}
+/* A big text size makes the receipt too wide for the copy beside it (a 32 px root left the lead 206 px, 14 lines, at 950 px): the page is
+   as wide as before, so below the 900 px breakpoint counted in rem (55.25rem: a little less, because a container's width has no
+   scrollbar) the price stacks like it does below 900 px. At the default root this is the 900 px breakpoint itself. */
+@container (max-width: 55.25rem) {
+  .price-grid { grid-template-columns: minmax(0, 1fr); }
+  .br-d { display: none; }
+  .receipt-col { width: min(23.75rem, calc(100% - (1rem - 16px) * 3)); }
+  .price-copy { text-align: center; }
+  .price-copy .lead { margin-inline: auto; }
+  .req { justify-content: center; }
+  .mascot-money { right: -20px; bottom: max(-2.5rem, -40px); }
 }
 @media (max-width: 700px) { .price-grid { row-gap: 3.75rem; } }
 
@@ -685,6 +707,7 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
 }
 @media (max-width: 900px) {
   .how-grid, .styles-grid, .check-grid, .price-grid { grid-template-columns: 1fr; }
+  .price-grid { grid-template-columns: minmax(0, 1fr); } /* the receipt's long lines must not widen the column past the page at a big text size */
   .vframe { margin-top: 26px; }
   .watch { padding-top: calc(var(--pad-y) + 20px); }
   .tickets { margin-right: -10px; }
@@ -719,7 +742,6 @@ html.js .float-badge:not(.show) { opacity: 0; visibility: hidden; translate: 0 2
   .step-m { display: none; }
   .arrow-li { display: none; }
   .faq-grid { grid-template-columns: 1fr; }
-  .faq-col:first-child details:last-child { border-bottom: 0; }
   .hero { --fan-h: 21.25rem; --fan-trim: 0px; min-height: 59.25rem; padding-top: 1.5rem; }
   .hero .prompt { height: 2.9375rem; }
   .hero .cta-row .btn { width: 13.875rem; }

@@ -2,7 +2,7 @@ status: verified (one-prompt run, started by the owner 2026-11-12) # draft → p
 
 # Plan: layout parity with the reference site
 
-Intent: `intent/2026-11-12-layout-parity.md` (approved). Branch: `layout-parity`. Repo: 0xdonniechu/dc-landing. No tracker ticket (see the intent).
+Intent: `intent/2026-11-12-layout-parity.md` (approved). Branch: `layout-parity`. Repo: 0xdonniechu/dc-landing. Plane: LPP-2.
 
 ## How parity is measured
 - `scripts/parity.mjs` loads the reference and our page in the same local Chromium, with reduced motion so reveal transforms are settled. It runs at 1440, 1100, 950, 768 and 390 px, 900 px tall. Before measuring it waits for `document.fonts.ready` and scrolls the page once so lazy and revealed content is laid out.
@@ -161,7 +161,7 @@ T8 also takes the T4 review's MINORs: the watch CTA's `min-width` makes it 444 p
 5. PASS: preview https://dc-landing-pxtkgb58h-chuu3112s-projects.vercel.app (built from d0bfe88, team chuu3112s-projects); `node scripts/deploy-check.mjs <preview> --header "x-vercel-protection-bypass: …"` 31/31 ok, 0 problems (without the header the preview's protection answers 302, as expected).
 6. PASS, on two scratch copies of the same tree: with the shared `@media (max-width: 900px)` block changed to 960px the gate exits 1 with 83 failing rows (the breakpoint row at every width, page height +1826 px at 950, block tops and heights); with `.terminal { width: 110% }` it exits 1 with 5 failing rows, `how.terminal.w` at every width (+35 to +70 px). Unchanged, the same tree exits 0 (Proof 1).
 7. PASS: `sdlc-check.py converge` (run after this Result was written; see the commit that records it).
-8. not run: the owner looks at the pairs in `.check/parity/`.
+8. PASS: the owner looked at the result and accepted it on 2026-11-13 ("đạt yêu cầu").
 
 Reviews: every task T1–T8 has a reviewer PASS (T1 at 4b920f1 and T2 at 138bc7e were recorded as `none` by the loop hook before coding-playbook PR #72/#73 fixed it; T3–T8 are on record in the run). FAILs fixed: T2 r1, T3 r1–r2, T4 r1, T5 r1, T7 r1.
 

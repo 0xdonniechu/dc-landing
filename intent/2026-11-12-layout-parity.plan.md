@@ -149,7 +149,7 @@ T8 also takes the T4 review's MINORs: the watch CTA's `min-width` makes it 444 p
 4. `node scripts/deploy-check.mjs` reports 0 problems on a local published-only server (`.check/static-server.mjs`).
 5. `node scripts/deploy-check.mjs <preview-url>` reports 0 problems on a Vercel preview, with the protection-bypass header.
 6. The gate bites. With the 900 px breakpoint changed to 960 px, and separately with the how terminal 10% wider, `node scripts/parity.mjs` exits 1 and names the failing rows. After both are restored it exits 0.
-7. `python3 ~/work/ambysto/coding-playbook/scripts/sdlc-check.py converge intent/2026-11-12-layout-parity.plan.md` passes.
+7. `sdlc-check.py converge intent/2026-11-12-layout-parity.plan.md` passes.
 8. The owner looks at the side-by-side screenshots in `.check/parity/` for every width.
 
 ## Result

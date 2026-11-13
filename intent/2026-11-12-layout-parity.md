@@ -1,5 +1,5 @@
 ---
-status: verified  # draft → approved → planned → building → verified → shipped (PR #n)
+status: shipped (merged to main 2026-11-13, no PR: fast-forward on the owner's approval)  # draft → approved → planned → building → verified → shipped (PR #n)
 ---
 # Layout parity with the reference site
 
@@ -52,7 +52,7 @@ Success criteria, all measured by one script (`scripts/parity.mjs`) that loads t
 - Tolerances as in criteria 2, 3 and 5 (±3% section heights, ±1% section tops and page height, ±12 px / ±4% components, ±2% heading size).
 - Video 1 is vertical, but the reference's 60-second frame is landscape. The frame keeps the reference's size, and the vertical video plays centred in it on a brand-coloured background.
 - The proof card 3 thumbnail uses the hero loop, as there are only three owner videos and video 1 is in the 60-second section.
-- No tracker ticket: this repo belongs to 0xdonniechu, and the Plane tracker is Ambysto's.
+- No tracker ticket: this repo has no tracker project.
 
 ## Open questions
 None.
